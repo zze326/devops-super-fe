@@ -5,5 +5,5 @@ defineOptions({
 </script>
 
 <template>
-  <h1>zze Admin Go</h1>
+  <h1>Devops Super</h1>
 </template>

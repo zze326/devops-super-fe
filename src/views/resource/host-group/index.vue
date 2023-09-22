@@ -14,7 +14,7 @@ import { Permiss } from "./logic/types";
 import { hasAuth } from "@/router/utils";
 
 defineOptions({
-  name: "dept-manage"
+  name: "host-group-manage"
 });
 
 const tableRef = ref();
@@ -42,9 +42,9 @@ const {
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
       @submit.prevent
     >
-      <el-form-item label="部门名称：" prop="name">
+      <el-form-item label="主机组名称：" prop="name">
         <el-input
-          placeholder="请输入部门名称"
+          placeholder="请输入主机组名称"
           v-model="queryFormData.search"
           clearable
           class="!w-[200px]"
@@ -69,7 +69,7 @@ const {
     </el-form>
 
     <PureTableBar
-      title="部门列表"
+      title="主机组列表"
       :columns="columns"
       :tableRef="tableRef?.getTableRef()"
       @refresh="onSearch"
@@ -81,7 +81,7 @@ const {
           :icon="useRenderIcon(AddFill)"
           @click="openDialog()"
         >
-          新增部门
+          新增主机组
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -133,7 +133,7 @@ const {
             </el-button>
             <Auth :value="Permiss.DEL">
               <el-popconfirm
-                :title="`是否确认删除部门名称为 ${row.name} 的这条数据`"
+                :title="`是否确认删除主机组名称为 ${row.name} 的这条数据`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>
