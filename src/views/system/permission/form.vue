@@ -6,11 +6,13 @@ import { EType, FormProps } from "./logic/types";
 import { initValues, dynamicRules } from "./logic/form";
 import { handleTree } from "@/utils/tree";
 import { ETypeModel } from "./logic/types";
+import { useCommonLogic } from "@/utils/common";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formData: () => initValues(),
   list: []
 });
+const { switchStyle } = useCommonLogic();
 
 const formRef = ref();
 const formData = ref(props.formData);
@@ -180,6 +182,7 @@ defineExpose({ getRef });
             inline-prompt
             :active-value="true"
             :inactive-value="false"
+            :style="switchStyle"
             active-text="是"
             inactive-text="否"
           />

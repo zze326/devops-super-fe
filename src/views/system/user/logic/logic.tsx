@@ -10,7 +10,7 @@ import { message } from "@/utils/message";
 import {
   addApi,
   uptApi,
-  getLstApi,
+  getPageLstApi,
   delApi,
   uptEnabled,
   uptPassword
@@ -94,7 +94,7 @@ export const useLogic = () => {
 
   const onSearch = async () => {
     if (!hasAuth(Permiss.READ)) return;
-    const { data } = await getLstApi(
+    const { data } = await getPageLstApi(
       new ReqPagerData(
         pagination.currentPage,
         pagination.pageSize,

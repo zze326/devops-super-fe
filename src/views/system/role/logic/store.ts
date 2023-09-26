@@ -8,9 +8,5 @@ export const useStore = defineStore("role-manage", {
     };
   },
   getters: {},
-  actions: {
-    // handleCollapse() {
-    //   this.collapse = !this.collapse;
-    // }
-  }
+  actions: {}
 });

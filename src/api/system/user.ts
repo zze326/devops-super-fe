@@ -17,7 +17,7 @@ export const addApi = (data: Partial<Model>) =>
   http.request<Resp<null>>("post", "/user", { data });
 
 /** 分页获取用户列表 */
-export const getLstApi = (data: IReqPagerData) =>
+export const getPageLstApi = (data: IReqPagerData) =>
   http.request<Resp<IRespPagerData<Model>>>("get", "/user/page-list", {
     params: data
   });

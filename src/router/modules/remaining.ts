@@ -26,5 +26,14 @@ export default [
         component: () => import("@/layout/redirect.vue")
       }
     ]
+  },
+  {
+    path: "/host/terminal-single",
+    name: "host-terminal-single",
+    component: () => import("@/views/resource/host/terminal-single.vue"),
+    meta: {
+      title: "终端",
+      showLink: false
+    }
   }
 ] as Array<RouteConfigsTable>;
