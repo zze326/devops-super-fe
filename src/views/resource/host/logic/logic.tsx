@@ -89,6 +89,8 @@ export const useLogic = () => {
 
   // 打开新增、编辑框
   const openDialog = async (title = "新增", row?: FormDataProps) => {
+    row = row ?? {};
+    Object.assign(row, { hostGroupId: queryFormData.hostGroupId });
     const res = await getHostGroupLstApi(null);
     addDialog({
       title: `${title}主机`,
