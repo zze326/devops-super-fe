@@ -123,6 +123,7 @@ export const useLogic = () => {
 
           done(); // 关闭弹框
           onSearch(); // 刷新表格数据
+          getHostGroupTree(); // 刷新主机组树
         };
         if (!ok) {
           return;
