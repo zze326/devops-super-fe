@@ -91,7 +91,7 @@ export const useLogic = () => {
   const openDialog = async (title = "新增", row?: FormDataProps) => {
     const res = await getHostGroupLstApi(null);
     addDialog({
-      title: `${title}用户`,
+      title: `${title}主机`,
       props: {
         formData: initValues(row),
         hostGroupTreeList: handleTree(res.data.list)
@@ -110,13 +110,13 @@ export const useLogic = () => {
           }
           if (title === "新增") {
             message(
-              `您${title}了用户名为 ${formData.username} 的这条数据，默认密码为 devops.123`,
+              `您${title}了主机名为 ${formData.username} 的这条数据，默认密码为 devops.123`,
               {
                 type: "success"
               }
             );
           } else {
-            message(`您${title}了用户名为 ${formData.username} 的这条数据`, {
+            message(`您${title}了主机名为 ${formData.username} 的这条数据`, {
               type: "success"
             });
           }
@@ -151,7 +151,7 @@ export const useLogic = () => {
       message(res.message, { type: "error" });
       return;
     }
-    message(`您删除了用户名为 ${row.username} 的这条数据`, { type: "success" });
+    message(`您删除了主机名为 ${row.username} 的这条数据`, { type: "success" });
     onSearch();
   };
 

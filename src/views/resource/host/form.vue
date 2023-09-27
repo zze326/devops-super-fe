@@ -84,7 +84,7 @@ defineExpose({ getRef });
           />
         </ElFormItem>
       </re-col>
-      <re-col :value="15" :xs="16" :sm="24">
+      <re-col :value="10" :xs="16" :sm="24">
         <ElFormItem label="用户名" prop="username">
           <el-input
             show-word-limit
@@ -94,8 +94,20 @@ defineExpose({ getRef });
             placeholder="请输入连接用户名, 例: root"
         /></ElFormItem>
       </re-col>
-
-      <re-col :value="9" :xs="24" :sm="24">
+      <re-col :value="6" :xs="24" :sm="24">
+        <el-form-item label="记录会话" prop="name">
+          <el-switch
+            v-model="formData.saveSession"
+            inline-prompt
+            :active-value="true"
+            :inactive-value="false"
+            :style="switchStyle"
+            active-text="是"
+            inactive-text="否"
+          />
+        </el-form-item>
+      </re-col>
+      <re-col :value="6" :xs="24" :sm="24">
         <el-form-item label="秘钥认证" prop="name">
           <el-switch
             v-model="formData.useKey"
@@ -112,7 +124,7 @@ defineExpose({ getRef });
         <ElFormItem v-if="formData.useKey" label="秘钥" prop="privateKey">
           <el-input
             v-model="formData.privateKey"
-            :rows="2"
+            :rows="4"
             type="textarea"
             placeholder="请输入连接秘钥"
         /></ElFormItem>
@@ -125,18 +137,14 @@ defineExpose({ getRef });
           />
         </ElFormItem>
       </re-col>
-      <re-col :xs="24" :sm="24">
-        <el-form-item label="记录会话" prop="name">
-          <el-switch
-            v-model="formData.saveSession"
-            inline-prompt
-            :active-value="true"
-            :inactive-value="false"
-            :style="switchStyle"
-            active-text="是"
-            inactive-text="否"
-          />
-        </el-form-item>
+      <re-col :xs="16" :sm="24">
+        <ElFormItem label="描述" prop="desc">
+          <el-input
+            v-model="formData.desc"
+            :rows="2"
+            type="textarea"
+            placeholder="请输入主机描述"
+        /></ElFormItem>
       </re-col>
     </el-row>
   </el-form>
