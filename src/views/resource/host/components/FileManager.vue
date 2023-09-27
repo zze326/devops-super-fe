@@ -19,7 +19,7 @@
                 :style="switchStyle"
               />
             </el-col>
-            <el-col :span="10">
+            <el-col :span="10" v-auth="Permiss.TERMINAL_SFTP_UPLOAD">
               <el-progress
                 v-if="state.uploading"
                 :text-inside="true"
@@ -92,11 +92,22 @@
           sortable
           align="center"
         />
-        <el-table-column label="操作" width="110" align="center">
+        <el-table-column
+          label="操作"
+          v-if="
+            hasAuth(
+              [Permiss.TERMINAL_SFTP_DOWNLOAD, Permiss.TERMINAL_SFTP_DEL],
+              true
+            )
+          "
+          width="110"
+          align="center"
+        >
           <template #default="{ row }">
             <el-button
               type="primary"
               v-if="!row.is_dir"
+              v-auth="Permiss.TERMINAL_SFTP_DOWNLOAD"
               link
               @click="handleDownloadFile(row)"
               >下载</el-button
@@ -104,6 +115,7 @@
             <el-button
               type="danger"
               v-if="!row.is_dir"
+              v-auth="Permiss.TERMINAL_SFTP_DEL"
               link
               @click="handleDeleteFile(row)"
               >删除</el-button
@@ -123,12 +135,8 @@ import PathNavigater from "./PathNavigater.vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useCommonLogic } from "@/utils/common";
 import Upload from "@iconify-icons/ep/upload";
-
-const enum _permiss {
-  download = "host-terminal-file-manager-download",
-  delete = "host-terminal-file-manager-delete",
-  upload = "host-terminal-file-manager-upload"
-}
+import { Permiss } from "../logic/types";
+import { hasAuth } from "@/router/utils";
 
 interface fileinfo {
   name: string;

@@ -26,83 +26,85 @@ const {
 <template>
   <el-drawer
     destroy-on-close
+    @open="onSearch"
     v-model="store.terminalSessionDrawerVisible"
     title="终端会话记录"
     direction="rtl"
     size="50%"
   >
-    <div class="main">
-      <el-form
-        ref="queryFormRef"
-        v-auth="Permiss.READ"
-        :inline="true"
-        :model="queryFormData"
-        @submit.prevent
-        class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
-      >
-        <el-form-item label="主机：" prop="search">
-          <el-input
-            v-model="queryFormData.search"
-            placeholder="请输入主机名称/地址"
-            clearable
-            @keyup.enter="onSearch"
-            class="!w-[200px]"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            :icon="useRenderIcon(Search)"
-            :loading="loading"
-            @click="onSearch"
-          >
-            搜索
-          </el-button>
-          <el-button
-            :icon="useRenderIcon(Refresh)"
-            @click="resetForm(queryFormRef)"
-          >
-            重置
-          </el-button>
-        </el-form-item>
-      </el-form>
+    <el-form
+      ref="queryFormRef"
+      v-auth="Permiss.TERMINAL_SESSION_READ"
+      :inline="true"
+      :model="queryFormData"
+      @submit.prevent
+      class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
+    >
+      <el-form-item label="主机：" prop="search">
+        <el-input
+          v-model="queryFormData.search"
+          placeholder="请输入主机名称/地址"
+          clearable
+          @keyup.enter="onSearch"
+          class="!w-[200px]"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          :icon="useRenderIcon(Search)"
+          :loading="loading"
+          @click="onSearch"
+        >
+          搜索
+        </el-button>
+        <el-button
+          :icon="useRenderIcon(Refresh)"
+          @click="resetForm(queryFormRef)"
+        >
+          重置
+        </el-button>
+      </el-form-item>
+    </el-form>
 
-      <PureTableBar title="会话记录列表" :columns="columns" @refresh="onSearch">
-        <template v-slot="{ size, dynamicColumns }">
-          <pure-table
-            align-whole="center"
-            showOverflowTooltip
-            table-layout="auto"
-            :loading="loading"
-            :size="size"
-            adaptive
-            :data="dataList"
-            :empty-text="hasAuth(Permiss.READ) ? '暂无数据' : '权限不足'"
-            :columns="dynamicColumns"
-            :pagination="pagination"
-            :paginationSmall="size === 'small' ? true : false"
-            :header-cell-style="{
-              background: 'var(--el-fill-color-light)',
-              color: 'var(--el-text-color-primary)'
-            }"
-          >
-            <template #operation="{ row }">
-              <el-button
-                class="reset-margin"
-                link
-                type="primary"
-                :size="size"
-                :icon="useRenderIcon(CaretRight)"
-                :loading="row.loading"
-                @click="handleReplay(row)"
-              >
-                回放
-              </el-button>
-            </template>
-          </pure-table>
-        </template>
-      </PureTableBar>
-    </div>
+    <PureTableBar title="会话记录列表" :columns="columns" @refresh="onSearch">
+      <template v-slot="{ size, dynamicColumns }">
+        <pure-table
+          align-whole="center"
+          showOverflowTooltip
+          table-layout="auto"
+          :loading="loading"
+          :size="size"
+          adaptive
+          :data="dataList"
+          :empty-text="
+            hasAuth(Permiss.TERMINAL_SESSION_READ) ? '暂无数据' : '权限不足'
+          "
+          :columns="dynamicColumns"
+          :pagination="pagination"
+          :paginationSmall="size === 'small' ? true : false"
+          :header-cell-style="{
+            background: 'var(--el-fill-color-light)',
+            color: 'var(--el-text-color-primary)'
+          }"
+        >
+          <template #operation="{ row }">
+            <el-button
+              class="reset-margin"
+              link
+              type="primary"
+              v-auth="Permiss.TERMINAL_SESSION_REPLAY"
+              :size="size"
+              :icon="useRenderIcon(CaretRight)"
+              :loading="row.loading"
+              @click="handleReplay(row)"
+            >
+              回放
+            </el-button>
+          </template>
+        </pure-table>
+      </template>
+    </PureTableBar>
   </el-drawer>
 </template>
 

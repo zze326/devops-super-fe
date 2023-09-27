@@ -40,6 +40,7 @@ const {
 </script>
 <template>
   <div class="flex justify-between">
+    <TerminalSession />
     <tree
       ref="treeRef"
       class="min-w-[200px] mr-2"
@@ -87,6 +88,7 @@ const {
         <template #buttons>
           <el-button
             type="primary"
+            v-auth="Permiss.TERMINAL_SESSION_READ"
             :icon="useRenderIcon(Document)"
             @click="showTerminalSessionDrawer"
             >终端会话记录</el-button
@@ -152,6 +154,7 @@ const {
               <el-button
                 class="reset-margin"
                 link
+                v-auth="Permiss.TERMINAL_CONNECT"
                 type="primary"
                 :size="size"
                 :icon="useRenderIcon(CaretRight)"
@@ -166,7 +169,6 @@ const {
       </PureTableBar>
     </div>
   </div>
-  <TerminalSession />
 </template>
 
 <style scoped lang="scss">

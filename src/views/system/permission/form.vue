@@ -79,7 +79,7 @@ defineExpose({ getRef });
         <el-form-item label="权限标题" prop="title">
           <el-input
             show-word-limit
-            maxlength="30"
+            maxlength="32"
             :disabled="isSystemRequired"
             v-model="formData.title"
             clearable
@@ -92,7 +92,7 @@ defineExpose({ getRef });
           <el-input
             show-word-limit
             :disabled="isSystemRequired"
-            maxlength="30"
+            maxlength="32"
             v-model="formData.name"
             clearable
             placeholder="请输入权限名称"

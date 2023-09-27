@@ -125,6 +125,19 @@ defineExpose({ getRef });
           />
         </ElFormItem>
       </re-col>
+      <re-col :xs="24" :sm="24">
+        <el-form-item label="记录会话" prop="name">
+          <el-switch
+            v-model="formData.saveSession"
+            inline-prompt
+            :active-value="true"
+            :inactive-value="false"
+            :style="switchStyle"
+            active-text="是"
+            inactive-text="否"
+          />
+        </el-form-item>
+      </re-col>
     </el-row>
   </el-form>
 </template>

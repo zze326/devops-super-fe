@@ -62,7 +62,7 @@ export const useLogic = () => {
       fixed: "right",
       width: 240,
       slot: "operation",
-      hide: !hasAuth([Permiss.UPT, Permiss.DEL], true)
+      hide: !hasAuth([Permiss.UPT, Permiss.DEL, Permiss.TERMINAL_CONNECT], true)
     }
   ];
 

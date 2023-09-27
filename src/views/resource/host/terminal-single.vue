@@ -228,7 +228,7 @@ const handleFileManagerDrawerClose = async () => {
   if (!(await confirm("确认关闭？"))) {
     return;
   }
-  fileManagerRef.value?.handleClose();
+  // fileManagerRef.value?.handleClose();
   fileManagerState.visible = false;
 };
 </script>

@@ -1,5 +1,5 @@
-import { FormDataProps } from "./types";
-import { ref, onMounted, reactive } from "vue";
+import { FormDataProps, Permiss } from "./types";
+import { ref, reactive } from "vue";
 import { ElMessage } from "element-plus";
 import {
   getPageLstApi,
@@ -10,6 +10,7 @@ import { PaginationProps } from "@pureadmin/table";
 import { useStore } from "./store";
 import { confirm } from "@/utils/generic";
 import router from "@/router";
+import { hasAuth } from "@/router/utils";
 
 export const useLogic = () => {
   const loading = ref(false);
@@ -56,20 +57,19 @@ export const useLogic = () => {
       label: "操作",
       fixed: "right",
       width: 100,
-      slot: "operation"
+      slot: "operation",
+      hide: !hasAuth([Permiss.TERMINAL_SESSION_REPLAY], true)
     }
   ];
 
   const onSearch = async () => {
+    if (!hasAuth(Permiss.TERMINAL_SESSION_READ)) return;
     loading.value = true;
     const { data } = await getPageLstApi(
       new ReqPagerData(
         pagination.currentPage,
         pagination.pageSize,
-        queryFormData.search,
-        {
-          hostGroupId: queryFormData.hostGroupId
-        }
+        queryFormData.search
       )
     );
     dataList.value = data.list;
@@ -83,7 +83,7 @@ export const useLogic = () => {
     onSearch();
   };
 
-  const queryFormData = reactive({ search: "", hostGroupId: null });
+  const queryFormData = reactive({ search: "" });
 
   // 回放记录
   const handleReplay = async (row: FormDataProps) => {
@@ -106,9 +106,9 @@ export const useLogic = () => {
     window.open(href, "_blank");
   };
 
-  onMounted(() => {
-    onSearch();
-  });
+  // onMounted(() => {
+  //   onSearch();
+  // });
 
   return {
     loading,

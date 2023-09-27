@@ -10,11 +10,10 @@ export const dynamicRules = (formData: FormDataProps) => {
     name: [
       { required: true, message: "主机标识名称为必填项", trigger: "blur" }
     ],
-    host: [
+    hostAddr: [
       { required: true, message: "主机名必填项", trigger: "blur" },
       {
-        pattern:
-          /^(?!:\/\/)(?=.{1,253}$)(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.){0,3}([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[\d]{1,3})$/,
+        pattern: /^[a-zA-Z0-9.-]+$/,
         message: "请输入合法的主机名或 IP 地址",
         trigger: "blur"
       }

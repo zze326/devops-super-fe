@@ -369,7 +369,12 @@ function getHistoryMode(routerHistory): RouterHistory {
 
 /** 获取当前页面按钮级别的权限 */
 function getAuths(): Array<string> {
-  return router.currentRoute.value.meta.auths as Array<string>;
+  if (
+    ["host-terminal-single"].includes(router.currentRoute.value.name as string)
+  ) {
+    return router.getRoutes().find(r => r.name === "host-manage").meta.auths;
+  }
+  return router.currentRoute.value.meta.auths;
 }
 
 /** 是否有按钮级别的权限 */
