@@ -22,6 +22,10 @@ export const getPageLstApi = (data: IReqPagerData) =>
     params: data
   });
 
+/** 获取用户列表 */
+export const getLstApi = () =>
+  http.request<Resp<{ list: Model[] }>>("get", "/user/list");
+
 /** 更新用户 */
 export const uptApi = (id: number, data: Partial<Model>) =>
   http.request<Resp<null>>("put", `/user/${id}`, { data });

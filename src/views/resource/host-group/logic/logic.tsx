@@ -6,6 +6,8 @@ import { h, ref, onMounted, reactive } from "vue";
 import { FormInstance } from "element-plus";
 import { message } from "@/utils/message";
 import { addApi, uptApi, getLstApi, delApi } from "@/api/resource/host-group";
+import { getLstApi as getRoleLstApi } from "@/api/system/role";
+import { getLstApi as getUserLstApi } from "@/api/system/user";
 import { handleTree } from "@/utils/tree";
 import { hasAuth } from "@/router/utils";
 
@@ -48,9 +50,14 @@ export const useLogic = () => {
 
   // 打开新增、编辑框
   const openDialog = async (title = "新增", row?: FormItemProps) => {
-    const { data } = await getLstApi(null);
+    const [data, userLstData, roleLstData] = await Promise.all([
+      getLstApi(null),
+      getUserLstApi(),
+      getRoleLstApi()
+    ]);
+
     if (title === "编辑" && row) {
-      const dst = data.list.find(item => item.id === row.id);
+      const dst = data.data.list.find(item => item.id === row.id);
       Object.assign(dst, { disabled: true });
     }
 
@@ -58,7 +65,9 @@ export const useLogic = () => {
       title: `${title}主机组`,
       props: {
         formData: initValues(row),
-        list: data.list
+        list: data.data.list,
+        userList: userLstData.data.list,
+        roleList: roleLstData.data.list
       },
       width: "26%",
       draggable: true,

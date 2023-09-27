@@ -6,6 +6,9 @@ export type Model = {
   rank: number;
   parentId: number;
   updatedAt: string;
+  userIds: number[];
+  roleIds: number[];
+  hostCount: number;
 };
 
 /** 新增主机组 */
@@ -25,3 +28,7 @@ export const uptApi = (id: number, data: Partial<Model>) =>
 /** 删除主机组 */
 export const delApi = (id: number) =>
   http.request<Resp<null>>("delete", `/host-group/${id}`);
+
+/** 获取主机组列表（包含对应主机数量） */
+export const getLstPartialApi = () =>
+  http.request<Resp<{ list: Model[] }>>("get", "/host-group/partial-list");

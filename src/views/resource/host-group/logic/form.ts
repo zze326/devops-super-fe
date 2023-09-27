@@ -11,6 +11,8 @@ export const initValues = (row?: FormItemProps): FormItemProps => {
   return {
     parentId: row?.parentId ?? 0,
     name: row?.name ?? "",
-    rank: row?.rank ?? 0
+    rank: row?.rank ?? 0,
+    roleIds: row?.roleIds ?? [],
+    userIds: row?.userIds ?? []
   };
 };

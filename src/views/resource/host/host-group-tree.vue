@@ -196,7 +196,7 @@ defineExpose({ onTreeReset });
                 : Dept
             "
           /> -->
-          {{ node.label }}
+          {{ node.label }} ({{ node.data.hostCount }})
         </span>
       </template>
     </el-tree>

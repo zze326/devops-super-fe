@@ -13,7 +13,10 @@ import {
   delApi,
   testSshApi
 } from "@/api/resource/host";
-import { getLstApi as getHostGroupLstApi } from "@/api/resource/host-group";
+import {
+  getLstApi as getHostGroupLstApi,
+  getLstPartialApi as getHostGroupPartialLstApi
+} from "@/api/resource/host-group";
 import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";
 import { handleTree } from "@/utils/tree";
@@ -86,11 +89,12 @@ export const useLogic = () => {
 
   // 打开新增、编辑框
   const openDialog = async (title = "新增", row?: FormDataProps) => {
+    const res = await getHostGroupLstApi(null);
     addDialog({
       title: `${title}用户`,
       props: {
         formData: initValues(row),
-        hostGroupTreeList
+        hostGroupTreeList: handleTree(res.data.list)
       },
       width: "35%",
       draggable: true,
@@ -153,7 +157,7 @@ export const useLogic = () => {
 
   const getHostGroupTree = async () => {
     hostGroupTreeLoading.value = true;
-    const res = await getHostGroupLstApi(null);
+    const res = await getHostGroupPartialLstApi();
     hostGroupTreeList.value = handleTree(res.data.list);
     hostGroupTreeLoading.value = false;
   };

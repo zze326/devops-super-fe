@@ -7,7 +7,9 @@ import { handleTree } from "@/utils/tree";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formData: () => initValues(),
-  list: []
+  list: [],
+  roleList: null,
+  userList: null
 });
 
 const formRef = ref();
@@ -20,7 +22,7 @@ defineExpose({ getRef });
 </script>
 
 <template>
-  <el-form ref="formRef" :model="formData" :rules="rules" label-width="92px">
+  <el-form ref="formRef" :model="formData" :rules="rules" label-width="100px">
     <el-row :gutter="30">
       <re-col :value="24" :xs="24" :sm="24">
         <el-form-item label="上级主机组" prop="parentId">
@@ -55,6 +57,40 @@ defineExpose({ getRef });
             clearable
             placeholder="请输入主机组名称"
           />
+        </el-form-item>
+      </re-col>
+      <re-col :value="24" :xs="24" :sm="24">
+        <el-form-item label="授权角色" prop="roleIds">
+          <el-select
+            v-model="formData.roleIds"
+            class="w-full"
+            multiple
+            placeholder="请选择角色"
+          >
+            <el-option
+              v-for="item in props.roleList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </re-col>
+      <re-col :value="24" :xs="24" :sm="24">
+        <el-form-item label="授权用户" prop="userIds">
+          <el-select
+            v-model="formData.userIds"
+            class="w-full"
+            multiple
+            placeholder="请选择角色"
+          >
+            <el-option
+              v-for="item in props.userList"
+              :key="item.id"
+              :label="item.realName"
+              :value="item.id"
+            />
+          </el-select>
         </el-form-item>
       </re-col>
 
