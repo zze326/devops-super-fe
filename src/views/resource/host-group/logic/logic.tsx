@@ -57,8 +57,11 @@ export const useLogic = () => {
     ]);
 
     if (title === "编辑" && row) {
-      const dst = data.data.list.find(item => item.id === row.id);
-      Object.assign(dst, { disabled: true });
+      data.data.list
+        .filter(item => item.id === row.id || item.parentId === row.id)
+        .forEach(item => {
+          Object.assign(item, { disabled: true });
+        });
     }
 
     addDialog({

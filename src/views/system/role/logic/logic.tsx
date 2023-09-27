@@ -71,8 +71,7 @@ export const useLogic = () => {
     addDialog({
       title: `${title}角色`,
       props: {
-        formData: initValues(row),
-        roleList: []
+        formData: initValues(row)
       },
       width: "26%",
       draggable: true,
