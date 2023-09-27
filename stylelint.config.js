@@ -21,6 +21,7 @@ module.exports = {
     }
   ],
   rules: {
+    "function-no-unknown": null,
     "selector-class-pattern": null,
     "no-descending-specificity": null,
     "scss/dollar-variable-pattern": null,
