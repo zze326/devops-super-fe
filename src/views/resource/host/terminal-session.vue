@@ -82,6 +82,8 @@ const {
           "
           :columns="dynamicColumns"
           :pagination="pagination"
+          @page-size-change="onSearch"
+          @page-current-change="onSearch"
           :paginationSmall="size === 'small' ? true : false"
           :header-cell-style="{
             background: 'var(--el-fill-color-light)',
