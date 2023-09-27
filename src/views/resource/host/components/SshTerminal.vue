@@ -55,7 +55,7 @@ let interval = null;
 
 const emits = defineEmits(["close", "connected", "reload", "ctrlU", "message"]);
 
-const _radiusEm = props.inBody ? 0 : 0.5;
+const _radius_em = props.inBody ? 0 : 0.5;
 
 const terminalRef = ref<HTMLDivElement>();
 const term = new Terminal({
@@ -235,7 +235,7 @@ onUnmounted(() => {
 }
 
 :deep(.xterm-viewport) {
-  border-radius: v-bind(_radiusem + "em");
+  border-radius: v-bind(_radius_em + "em");
 }
 
 #search-input {

@@ -60,7 +60,7 @@
     @connected="handleTerminalConnected"
     :key="terminalReloadCounter"
     ref="terminal"
-    :padding-bottom="paddingBottom"
+    :padding-bottom="padding_bottom"
     :ws-url="wsUrl"
     @reload="handleTerminalReload"
     :in-body="true"
@@ -136,7 +136,7 @@ const logPlayerState = reactive({
 const terminal = ref<any>();
 const terminalReloadCounter = ref(0);
 
-const paddingBottom = isReplayMode ? 30 : 0;
+const padding_bottom = isReplayMode ? 30 : 0;
 
 // 处理终端ctrl+u，打开文件管理器
 const handleTerminalCtrlU = () => {
@@ -237,7 +237,7 @@ const handleFileManagerDrawerClose = async () => {
 .tool-menu {
   display: flex;
   justify-content: space-between;
-  height: v-bind(paddingbottom + "px");
+  height: v-bind(padding_bottom + "px");
   padding: 0 20px;
   background-color: #f5f7fa;
 }
