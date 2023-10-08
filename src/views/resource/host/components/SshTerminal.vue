@@ -29,8 +29,10 @@ import { FitAddon } from "xterm-addon-fit";
 import { WebLinksAddon } from "xterm-addon-web-links";
 import { SearchAddon } from "xterm-addon-search";
 import "xterm/css/xterm.css";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElLoading } from "element-plus";
 import _ from "lodash";
+
+let loading = null;
 
 const props = defineProps({
   wsUrl: {
@@ -133,6 +135,7 @@ const resizeTerminal = () => {
 };
 
 const onOpen = () => {
+  loading.close();
   resizeTerminal();
   nextTick(() => {
     emits("connected");
@@ -146,11 +149,13 @@ const terminalWs = new WebSocket(props.wsUrl);
 
 const init = () => {
   if (!terminalRef.value) return;
+  resizeTerminal();
   term.open(terminalRef.value);
   term.focus();
   term.writeln("Connecting...");
   terminalWs.onopen = onOpen;
   terminalWs.onclose = () => {
+    loading.close();
     emits("close");
     state.connected = false;
     term.write("\n\x1b[31m终端连接已断开\x1b[0m\n");
@@ -174,6 +179,7 @@ const init = () => {
     }
   };
   terminalWs.onerror = () => {
+    loading.close();
     emits("close");
     state.connected = false;
     term.write("\x1b[31m终端连接出错\x1b[0m\n");
@@ -218,6 +224,11 @@ defineExpose({
 });
 
 onMounted(() => {
+  loading = ElLoading.service({
+    lock: true,
+    text: "连接中...",
+    background: "rgba(0, 0, 0, 0.7)"
+  });
   init();
 });
 onUnmounted(() => {

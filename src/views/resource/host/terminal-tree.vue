@@ -1,128 +1,121 @@
 <template>
-  <el-row style="height: 100%" :gutter="12">
-    <el-col :span="3">
-      <el-card>
-        <div class="logo">DevOps Super</div>
-        <el-tree
-          ref="treeSelectRef"
-          @node-click="handleNodeClick"
-          default-expand-all
-          :data="treeState.data"
-          node-key="id"
-          :render-after-expand="false"
-          :expand-on-click-node="false"
-          :highlight-current="true"
-        >
-          <template #default="{ node, data }">
-            <span style="position: relative; top: 2px">
-              <IconifyIconOffline
-                style="display: inline"
-                v-if="data.isHost"
-                :icon="Monitor"
-              />
-              <IconifyIconOffline
-                style="display: inline"
-                v-else-if="node.expanded && !node.isLeaf"
-                :icon="FolderOpened"
-              />
-              <IconifyIconOffline
-                style="display: inline"
-                v-else
-                :icon="Folder"
-              />
-            </span>
-            <span style="margin-left: 5px">{{ data.name }}</span
-            ><span style="margin-left: 5px" v-if="!data.isHost"
-              >({{ data.hostCount }})</span
-            >
-          </template>
-        </el-tree>
-      </el-card>
-    </el-col>
-    <el-col :span="21">
-      <el-card>
-        <el-tabs
-          @tab-click="handleTabClick"
-          @tab-remove="handleTabRemove"
-          v-model="tabState.activeTab"
-          closable
-          type="border-card"
-        >
-          <!-- 占位标签页模板 -->
-          <el-tab-pane
-            label="DevOps Super"
-            :name="-1"
-            v-if="!tabState.data.length"
+  <splitpane :splitSet="settingLR">
+    <template #paneL>
+      <div class="logo">DevOps Super</div>
+      <el-tree
+        ref="treeSelectRef"
+        @node-click="handleNodeClick"
+        default-expand-all
+        :data="treeState.data"
+        node-key="id"
+        :render-after-expand="false"
+        :expand-on-click-node="false"
+        :highlight-current="true"
+      >
+        <template #default="{ node, data }">
+          <span style="position: relative; top: 2px">
+            <IconifyIconOffline
+              style="display: inline"
+              v-if="data.isHost"
+              :icon="Monitor"
+            />
+            <IconifyIconOffline
+              style="display: inline"
+              v-else-if="node.expanded && !node.isLeaf"
+              :icon="FolderOpened"
+            />
+            <IconifyIconOffline style="display: inline" v-else :icon="Folder" />
+          </span>
+          <span style="margin-left: 5px">{{ data.name }}</span
+          ><span style="margin-left: 5px" v-if="!data.isHost"
+            >({{ data.hostCount }})</span
           >
-            <div class="placeholder-content">
-              <p>
+        </template>
+      </el-tree>
+    </template>
+    <template #paneR>
+      <el-tabs
+        class="h-[100%]"
+        @tab-click="handleTabClick"
+        @tab-remove="handleTabRemove"
+        v-model="tabState.activeTab"
+        closable
+        type="border-card"
+      >
+        <!-- 占位标签页模板 -->
+        <el-tab-pane
+          label="DevOps Super"
+          :name="-1"
+          v-if="!tabState.data.length"
+        >
+          <div class="placeholder-content">
+            <p>
+              <IconifyIconOffline
+                style="display: inline"
+                :icon="InfoFilled"
+                width="30"
+                class="relative top-2"
+              />
+              当前没有打开任何终端连接
+            </p>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane
+          :lazy="true"
+          :key="item.key"
+          :name="idx"
+          :label="item.label"
+          v-for="(item, idx) in tabState.data"
+        >
+          <template #label>
+            <div
+              :class="{
+                connected: item.connected,
+                disconnected: !item.connected
+              }"
+            >
+              {{ item.label }}
+              <span style="position: relative; top: 2px">
+                <IconifyIconOffline
+                  v-if="item.connected"
+                  :icon="SuccessFilled"
+                  style="display: inline"
+                />
                 <IconifyIconOffline
                   style="display: inline"
-                  :icon="InfoFilled"
-                  width="30"
-                  class="relative top-2"
+                  v-else
+                  :icon="CircleCloseFilled"
                 />
-                当前没有打开任何终端连接
-              </p>
+              </span>
             </div>
-          </el-tab-pane>
-          <el-tab-pane
-            :lazy="true"
-            :key="item.key"
-            :name="idx"
-            :label="item.label"
-            v-for="(item, idx) in tabState.data"
+          </template>
+          <SshTerminal
+            @reload="item.key = Date.now()"
+            @connected="item.connected = true"
+            @close="item.connected = false"
+            :ws-url="item.terminalUrl"
+            :in-body="false"
+            :padding-bottom="70"
+            @ctrl-u="handleTerminalCtrlU"
+          />
+          <el-drawer
+            v-model="fileManagerState.visible"
+            title="文件管理器"
+            direction="rtl"
+            :before-close="handleFileManagerDrawerClose"
+            size="50%"
           >
-            <template #label>
-              <div
-                :class="{
-                  connected: item.connected,
-                  disconnected: !item.connected
-                }"
-              >
-                {{ item.label }}
-                <span style="position: relative; top: 2px">
-                  <IconifyIconOffline
-                    v-if="item.connected"
-                    :icon="SuccessFilled"
-                    style="display: inline"
-                  />
-                  <IconifyIconOffline
-                    style="display: inline"
-                    v-else
-                    :icon="CircleCloseFilled"
-                  />
-                </span>
-              </div>
-            </template>
-            <SshTerminal
-              @reload="item.key = Date.now()"
-              @connected="item.connected = true"
-              @close="item.connected = false"
-              :ws-url="item.terminalUrl"
-              :in-body="false"
-              :padding-bottom="70"
-              @ctrl-u="handleTerminalCtrlU"
+            <FileManager
+              @download-file="handleDownloadFile"
+              :visible="fileManagerState.visible"
+              :ws-url="fileManagerState.wsUrl"
+              @close="handleFileManagerClose"
             />
-            <el-drawer
-              v-model="fileManagerState.visible"
-              title="文件管理器"
-              direction="rtl"
-              :before-close="handleFileManagerDrawerClose"
-              size="50%"
-            >
-              <FileManager
-                @download-file="handleDownloadFile"
-                :visible="fileManagerState.visible"
-                :ws-url="fileManagerState.wsUrl"
-                @close="handleFileManagerClose"
-              />
-            </el-drawer>
-          </el-tab-pane>
-        </el-tabs>
-      </el-card>
-    </el-col>
-  </el-row>
+          </el-drawer>
+        </el-tab-pane>
+      </el-tabs>
+    </template>
+  </splitpane>
 </template>
 
 <script setup lang="ts">
@@ -150,6 +143,13 @@ import SuccessFilled from "@iconify-icons/ep/success-filled";
 import CircleCloseFilled from "@iconify-icons/ep/circle-close-filled";
 import { hasAuth } from "@/router/utils";
 import { Permiss } from "./logic/types";
+import splitpane, { ContextProps } from "@/components/ReSplitPane";
+
+const settingLR: ContextProps = reactive({
+  minPercent: 10,
+  defaultPercent: 10,
+  split: "vertical"
+});
 
 const tokenInfo = getToken();
 
@@ -343,14 +343,6 @@ onUnmounted(() => {
 
 .el-tree :deep(.el-tree-node__content:hover) {
   background-color: #e6f7ff;
-}
-
-:deep(.el-card) {
-  height: 100%;
-}
-
-:deep(.el-card__body) {
-  height: 100%;
 }
 
 :deep(.el-tabs) {
