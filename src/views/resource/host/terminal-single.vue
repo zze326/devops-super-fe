@@ -95,6 +95,8 @@ import { confirm } from "@/utils/generic";
 import { Arrayable } from "@pureadmin/utils";
 import SshTerminal from "./components/SshTerminal.vue";
 import { getToken } from "@/utils/auth";
+import { hasAuth } from "@/router/utils";
+import { Permiss } from "./logic/types";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import RefreshRight from "@iconify-icons/ep/refresh-right";
 import VideoPlay from "@iconify-icons/ep/video-play";
@@ -140,6 +142,7 @@ const padding_bottom = isReplayMode ? 30 : 0;
 
 // 处理终端ctrl+u，打开文件管理器
 const handleTerminalCtrlU = () => {
+  if (!hasAuth(Permiss.TERMINAL_SFTP_READ)) return;
   const wsUrl = `${getWsProtocol()}://${
     import.meta.env.VITE_BASE_URL
   }/host/${id}/sftp-file-manager?token=${token}`;

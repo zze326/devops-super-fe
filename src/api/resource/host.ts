@@ -38,3 +38,7 @@ export const delApi = (id: number) =>
 /** 测试是否可以 ssh 连接 */
 export const testSshApi = (id: number) =>
   http.request<Resp<null>>("get", `/host/${id}/ssh-ok`);
+
+/** 获取当前用户拥有权限的主机列表 */
+export const getAuthorizedLstApi = () =>
+  http.request<Resp<{ list: Model[] }>>("get", "/host/authorized-list");

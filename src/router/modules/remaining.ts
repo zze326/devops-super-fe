@@ -35,5 +35,14 @@ export default [
       title: "终端",
       showLink: false
     }
+  },
+  {
+    path: "/host/terminal-tree",
+    name: "host-terminal-tree",
+    component: () => import("@/views/resource/host/terminal-tree.vue"),
+    meta: {
+      title: "终端",
+      showLink: false
+    }
   }
 ] as Array<RouteConfigsTable>;

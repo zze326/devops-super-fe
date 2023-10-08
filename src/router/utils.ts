@@ -370,7 +370,9 @@ function getHistoryMode(routerHistory): RouterHistory {
 /** 获取当前页面按钮级别的权限 */
 function getAuths(): Array<string> {
   if (
-    ["host-terminal-single"].includes(router.currentRoute.value.name as string)
+    ["host-terminal-single", "host-terminal-tree"].includes(
+      router.currentRoute.value.name as string
+    )
   ) {
     return router.getRoutes().find(r => r.name === "host-manage").meta.auths;
   }

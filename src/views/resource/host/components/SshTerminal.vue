@@ -153,7 +153,7 @@ const init = () => {
   terminalWs.onclose = () => {
     emits("close");
     state.connected = false;
-    term.write("\n\x1b[31m终端已断开\x1b[0m\n");
+    term.write("\n\x1b[31m终端连接已断开\x1b[0m\n");
     ElMessage.warning({
       message: "Websocket 连接已关闭",
       type: "warning",
@@ -176,7 +176,7 @@ const init = () => {
   terminalWs.onerror = () => {
     emits("close");
     state.connected = false;
-    term.write("\x1b[31m终端已断开\x1b[0m\n");
+    term.write("\x1b[31m终端连接出错\x1b[0m\n");
     ElMessage.error({
       message: "建立 Websocket 连接失败",
       type: "error",
@@ -222,8 +222,10 @@ onMounted(() => {
 });
 onUnmounted(() => {
   interval && clearInterval(interval);
-  const msg = { type: "close", input: "" };
-  terminalWs.send(JSON.stringify(msg));
+  if (terminalWs.readyState === 3) {
+    const msg = { type: "close", input: "" };
+    terminalWs.send(JSON.stringify(msg));
+  }
   terminalWs.close();
 });
 </script>

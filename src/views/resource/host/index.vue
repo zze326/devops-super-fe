@@ -35,6 +35,7 @@ const {
   handleDelete,
   onHostGroupTreeSelect,
   toTerminalSingle,
+  toTerminalTree,
   showTerminalSessionDrawer
 } = useLogic();
 </script>
@@ -86,6 +87,13 @@ const {
 
       <PureTableBar title="主机列表" :columns="columns" @refresh="onSearch">
         <template #buttons>
+          <el-button
+            type="primary"
+            :icon="useRenderIcon(CaretRight)"
+            v-auth="Permiss.TERMINAL_CONNECT"
+            @click="toTerminalTree()"
+            >终端管理器
+          </el-button>
           <el-button
             type="primary"
             v-auth="Permiss.TERMINAL_SESSION_READ"

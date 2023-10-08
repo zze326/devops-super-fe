@@ -191,6 +191,16 @@ export const useLogic = () => {
     window.open(href, "_blank");
   };
 
+  const toTerminalTree = async () => {
+    if (!(await confirm("将在新标签页打开终端管理器，是否确认？"))) {
+      return;
+    }
+    const { href } = router.resolve({
+      name: "host-terminal-tree"
+    });
+    window.open(href, "_blank");
+  };
+
   const showTerminalSessionDrawer = () => {
     store.terminalSessionDrawerVisible = true;
   };
@@ -216,6 +226,7 @@ export const useLogic = () => {
     handleDelete,
     onHostGroupTreeSelect,
     toTerminalSingle,
+    toTerminalTree,
     showTerminalSessionDrawer
   };
 };

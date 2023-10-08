@@ -199,6 +199,7 @@ defineExpose({ getRef });
             :disabled="!formData.parentId"
             v-model="formData.showParent"
             inline-prompt
+            :style="switchStyle"
             :active-value="true"
             :inactive-value="false"
             active-text="是"
@@ -217,6 +218,7 @@ defineExpose({ getRef });
           <el-switch
             v-model="formData.keepAlive"
             inline-prompt
+            :style="switchStyle"
             :active-value="true"
             :inactive-value="false"
             active-text="是"
