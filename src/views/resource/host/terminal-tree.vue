@@ -264,7 +264,7 @@ const handleTabRemove = (idx: TabPaneName) => {
   if (tabState.activeTab >= (idx as number)) {
     tabState.activeTab--;
   }
-  if (tabState.activeTab <= 0) {
+  if (tabState.activeTab <= 0 && tabState.data.length === 0) {
     tabState.activeTab = -1;
   }
 };

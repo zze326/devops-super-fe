@@ -44,7 +44,7 @@ const {
     <TerminalSession />
     <tree
       ref="treeRef"
-      class="min-w-[200px] mr-2"
+      class="min-w-[300px] mr-2"
       :treeData="hostGroupTreeList"
       :treeLoading="hostGroupTreeLoading"
       @tree-select="onHostGroupTreeSelect"
