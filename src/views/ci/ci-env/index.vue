@@ -42,7 +42,7 @@ const {
       <el-form-item label="名称：" prop="search">
         <el-input
           v-model="queryFormData.search"
-          placeholder="请输入名称"
+          placeholder="请输入构建环境名称"
           clearable
           class="!w-[200px]"
           @keyup.enter="onSearch"
@@ -105,7 +105,6 @@ const {
               link
               type="primary"
               :size="size"
-              :disabled="row.code === 'admin'"
               :icon="useRenderIcon(EditPen)"
               @click="openDialog('编辑', row)"
             >
@@ -119,7 +118,6 @@ const {
                 <template #reference>
                   <el-button
                     class="reset-margin"
-                    :disabled="row.code === 'admin'"
                     link
                     type="primary"
                     :size="size"

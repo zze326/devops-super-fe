@@ -34,3 +34,10 @@ export const getLstApi = () =>
     "get",
     "/kubernetes-config/list"
   );
+
+/** 获取所有 Kubernetes Config 列表（部分字段） */
+export const getPartialLstApi = () =>
+  http.request<Resp<{ list: Partial<Model>[] }>>(
+    "get",
+    "/kubernetes-config/partial-list"
+  );

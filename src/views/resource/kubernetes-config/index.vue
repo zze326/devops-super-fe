@@ -109,7 +109,6 @@ const {
               link
               type="primary"
               :size="size"
-              :disabled="row.code === 'admin'"
               :icon="useRenderIcon(EditPen)"
               @click="openDialog('编辑', row)"
             >
@@ -123,7 +122,6 @@ const {
                 <template #reference>
                   <el-button
                     class="reset-margin"
-                    :disabled="row.code === 'admin'"
                     link
                     type="primary"
                     :size="size"

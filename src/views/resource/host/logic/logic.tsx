@@ -15,7 +15,7 @@ import {
 } from "@/api/resource/host";
 import {
   getLstApi as getHostGroupLstApi,
-  getLstPartialApi as getHostGroupPartialLstApi
+  getPartialLstApi as getHostGroupPartialLstApi
 } from "@/api/resource/host-group";
 import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";

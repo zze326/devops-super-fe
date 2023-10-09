@@ -30,5 +30,5 @@ export const delApi = (id: number) =>
   http.request<Resp<null>>("delete", `/host-group/${id}`);
 
 /** 获取主机组列表（包含对应主机数量） */
-export const getLstPartialApi = () =>
+export const getPartialLstApi = () =>
   http.request<Resp<{ list: Model[] }>>("get", "/host-group/partial-list");
