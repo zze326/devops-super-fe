@@ -46,15 +46,18 @@ export const useLogic = () => {
     // },
     {
       label: "主机名称",
-      prop: "name"
+      prop: "name",
+      minWidth: 120
     },
     {
       label: "主机地址",
-      prop: "hostAddr"
+      prop: "hostAddr",
+      width: 125
     },
     {
       label: "描述",
-      prop: "desc"
+      prop: "desc",
+      minWidth: 150
     },
     {
       label: "更新时间",

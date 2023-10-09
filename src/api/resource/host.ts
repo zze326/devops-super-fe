@@ -15,7 +15,7 @@ export type Model = {
 };
 
 export const getApi = (id: number) =>
-  http.request<Resp<Model>>("get", `/host/${id}`);
+  http.request<Resp<Model>>("get", `/host/${id}/one`);
 
 /** 新增主机 */
 export const addApi = (data: Partial<Model>) =>

@@ -140,9 +140,11 @@ defineExpose({ getRef });
       <re-col :xs="16" :sm="24">
         <ElFormItem label="描述" prop="desc">
           <el-input
+            show-word-limit
             v-model="formData.desc"
             :rows="2"
             type="textarea"
+            maxlength="200"
             placeholder="请输入主机描述"
         /></ElFormItem>
       </re-col>
