@@ -1,6 +1,5 @@
 <template>
   <el-drawer v-model="store.arrangeVisible" title="编排流水线" size="50%">
-    <!-- overflow-scroll bg-yellow-100 -->
     <el-tabs
       class="h-[95%] overflow-scroll"
       type="card"
@@ -61,7 +60,7 @@
               <el-divider content-position="center">
                 任务 {{ taskIdx + 1 }}
               </el-divider>
-              <TaskForm ref="taskFormRef" data="task" />
+              <TaskForm ref="taskFormRef" :data="task" />
               <p style="text-align: center">
                 <el-button
                   :icon="useRenderIcon(Plus)"
@@ -375,6 +374,7 @@ const validateAllForms = async () => {
 
 // 保存
 const handleSave = async () => {
+  console.log(state.envTabs);
   if (!(await validateAllForms())) {
     message("表单校验不通过", { type: "warning" });
     return;
