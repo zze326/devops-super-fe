@@ -1,3 +1,4 @@
+import { EnumModel } from "@/utils/enum";
 import { http } from "@/utils/http";
 
 export type Model = {
@@ -6,6 +7,35 @@ export type Model = {
   desc: string;
   kubernetesConfigId: number;
   config: Config;
+};
+
+// 任务类型
+export enum ETaskType {
+  GIT_PULL = 1,
+  SHELL_EXEC = 2
+}
+
+// 任务类型枚举
+export const ETaskTypeModel = new EnumModel([
+  { value: ETaskType.GIT_PULL, display: "Git 拉取" },
+  { value: ETaskType.SHELL_EXEC, display: "Shell 执行" }
+]);
+
+// 任务数据结构
+export type Task = {
+  type: ETaskType;
+  data: GitPullData | ShellExecData;
+};
+
+// Git 拉取任务数据结构
+export type GitPullData = {
+  gitUrl: string;
+  branch: string;
+};
+
+// Shell 执行任务数据结构
+export type ShellExecData = {
+  content: string;
 };
 
 export type Config = ConfigEnvItem[];
@@ -18,6 +48,7 @@ export type ConfigEnvItem = {
 
 export type ConfigEnvStageItem = {
   name: string;
+  tasks: Task[];
 };
 
 /** 新增流水线 */

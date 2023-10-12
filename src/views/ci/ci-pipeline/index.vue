@@ -12,7 +12,7 @@ import Operation from "@iconify-icons/ep/operation";
 import { useLogic } from "./logic/logic";
 import { Permiss } from "./logic/types";
 import { hasAuth } from "@/router/utils";
-import Arrange from "./Arrange.vue";
+import Arrange from "./components/Arrange.vue";
 
 defineOptions({
   name: "ci-pipeline-manage"
