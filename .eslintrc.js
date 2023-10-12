@@ -73,6 +73,7 @@ module.exports = {
     }
   ],
   rules: {
+    "vue/no-mutating-props": "off",
     "vue/no-v-html": "off",
     "vue/require-default-prop": "off",
     "vue/require-explicit-emits": "off",
