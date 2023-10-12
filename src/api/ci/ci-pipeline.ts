@@ -5,7 +5,19 @@ export type Model = {
   name: string;
   desc: string;
   kubernetesConfigId: number;
-  config: any;
+  config: Config;
+};
+
+export type Config = ConfigEnvItem[];
+
+export type ConfigEnvItem = {
+  id: number;
+  name?: string;
+  stages: ConfigEnvStageItem[];
+};
+
+export type ConfigEnvStageItem = {
+  name: string;
 };
 
 /** 新增流水线 */
@@ -29,3 +41,16 @@ export const delApi = (id: number) =>
 /** 获取所有流水线列表 */
 export const getLstApi = () =>
   http.request<Resp<{ list: Partial<Model>[] }>>("get", "/ci-pipeline/list");
+
+/** 更新流水线配置 */
+export const uptConfigApi = (id: number, data: any) =>
+  http.request<Resp<null>>("patch", `/ci-pipeline/${id}/config`, {
+    data
+  });
+
+/** 获取流水线配置 */
+export const getConfigApi = (id: number) =>
+  http.request<Resp<{ config: Config; envMap: { id: number; name: string } }>>(
+    "get",
+    `/ci-pipeline/${id}/config`
+  );

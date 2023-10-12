@@ -12,6 +12,7 @@ import Operation from "@iconify-icons/ep/operation";
 import { useLogic } from "./logic/logic";
 import { Permiss } from "./logic/types";
 import { hasAuth } from "@/router/utils";
+import Arrange from "./Arrange.vue";
 
 defineOptions({
   name: "ci-pipeline-manage"
@@ -27,7 +28,9 @@ const {
   openDialog,
   onSearch,
   resetForm,
-  handleDelete
+  handleDelete,
+  handleArrange,
+  store
 } = useLogic();
 </script>
 <template>
@@ -97,7 +100,6 @@ const {
             background: 'var(--el-fill-color-light)',
             color: 'var(--el-text-color-primary)'
           }"
-          highlight-current-row
         >
           <template #operation="{ row }">
             <el-button
@@ -107,7 +109,7 @@ const {
               type="primary"
               :size="size"
               :icon="useRenderIcon(Operation)"
-              @click="openDialog('编排', row)"
+              @click="handleArrange(row)"
             >
               编排
             </el-button>
@@ -144,6 +146,7 @@ const {
         </pure-table>
       </template>
     </PureTableBar>
+    <Arrange v-if="store.arrangeVisible" />
   </div>
 </template>
 

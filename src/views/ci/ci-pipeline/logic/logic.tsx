@@ -10,11 +10,13 @@ import { getPartialLstApi as getKubernetesConfigPartialList } from "@/api/resour
 import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
+import { useStore } from "./store";
 
 export const useLogic = () => {
   const formRef = ref();
   const loading = ref(false);
   const dataList = ref([]);
+  const store = useStore();
 
   const pagination = reactive<PaginationProps>({
     total: 0,
@@ -127,6 +129,11 @@ export const useLogic = () => {
     onSearch();
   };
 
+  const handleArrange = (row: FormDataProps) => {
+    store.id = row.id;
+    store.arrangeVisible = true;
+  };
+
   onMounted(() => {
     onSearch();
   });
@@ -140,6 +147,8 @@ export const useLogic = () => {
     openDialog,
     onSearch,
     resetForm,
-    handleDelete
+    handleDelete,
+    handleArrange,
+    store
   };
 };

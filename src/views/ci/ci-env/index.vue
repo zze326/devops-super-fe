@@ -96,7 +96,6 @@ const {
             background: 'var(--el-fill-color-light)',
             color: 'var(--el-text-color-primary)'
           }"
-          highlight-current-row
         >
           <template #operation="{ row }">
             <el-button
