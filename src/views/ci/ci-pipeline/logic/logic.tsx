@@ -142,9 +142,8 @@ export const useLogic = () => {
   };
 
   const handleRun = async (row: FormDataProps) => {
-    const res = await runApi(row.id);
-    console.log(res);
-    message("开发中...", { type: "info" });
+    await runApi(row.id);
+    message("运行成功", { type: "success" });
   };
 
   onMounted(() => {
