@@ -6,6 +6,7 @@ export type Model = {
   name: string;
   desc: string;
   kubernetesConfigId: number;
+  kubernetesNamespace: string;
   config: Config;
 };
 

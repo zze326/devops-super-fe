@@ -107,7 +107,7 @@ const {
             :icon="useRenderIcon(EditPen)"
             @click="openDialog('编辑', row)"
           >
-            修改
+            编辑
           </el-button>
           <Auth :value="Permiss.DEL">
             <el-popconfirm

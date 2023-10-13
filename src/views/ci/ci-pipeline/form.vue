@@ -47,7 +47,17 @@ defineExpose({ getRef });
           </el-select>
         </ElFormItem>
       </re-col>
-
+      <re-col :xs="24" :sm="24">
+        <el-form-item label="名称空间" prop="kubernetesNamespace">
+          <el-input
+            show-word-limit
+            maxlength="30"
+            v-model="formData.kubernetesNamespace"
+            clearable
+            placeholder="请输入名称空间，默认为 devops-super-ci"
+          />
+        </el-form-item>
+      </re-col>
       <re-col :xs="24" :sm="24">
         <ElFormItem label="描述" prop="desc">
           <el-input
