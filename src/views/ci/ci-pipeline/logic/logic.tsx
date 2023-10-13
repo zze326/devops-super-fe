@@ -5,8 +5,14 @@ import { initValues } from "./form";
 import { h, ref, onMounted, reactive } from "vue";
 import { FormInstance } from "element-plus";
 import { message } from "@/utils/message";
-import { addApi, uptApi, getPageLstApi, delApi } from "@/api/ci/ci-pipeline";
-import { getPartialLstApi as getKubernetesConfigPartialList } from "@/api/resource/kubernetes-config";
+import {
+  addApi,
+  uptApi,
+  getPageLstApi,
+  delApi,
+  runApi
+} from "@/api/ci/ci-pipeline";
+import { getLstApi as getSecretList, ESecretType } from "@/api/resource/secret";
 import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
@@ -46,9 +52,12 @@ export const useLogic = () => {
     {
       label: "操作",
       fixed: "right",
-      width: 200,
+      width: 280,
       slot: "operation",
-      hide: !hasAuth([Permiss.UPT, Permiss.DEL, Permiss.ARRANGE], true)
+      hide: !hasAuth(
+        [Permiss.UPT, Permiss.DEL, Permiss.ARRANGE, Permiss.RUN],
+        true
+      )
     }
   ];
 
@@ -59,8 +68,7 @@ export const useLogic = () => {
       new ReqPagerData(
         pagination.currentPage,
         pagination.pageSize,
-        queryFormData.search,
-        { enabled: queryFormData.enabled }
+        queryFormData.search
       )
     );
     dataList.value = data.list;
@@ -70,7 +78,7 @@ export const useLogic = () => {
 
   // 打开新增、编辑框
   const openDialog = async (title = "新增", row?: FormDataProps) => {
-    const res = await getKubernetesConfigPartialList();
+    const res = await getSecretList({ type: ESecretType.KUBERNETES_CONFIG });
     addDialog({
       title: `${title}流水线`,
       props: {
@@ -112,12 +120,11 @@ export const useLogic = () => {
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
-    queryFormData.enabled = null;
     queryFormData.search = "";
     onSearch();
   };
 
-  const queryFormData = reactive({ search: "", enabled: null });
+  const queryFormData = reactive({ search: "" });
 
   const handleDelete = async (row: FormDataProps) => {
     const res = await delApi(row.id);
@@ -132,6 +139,12 @@ export const useLogic = () => {
   const handleArrange = (row: FormDataProps) => {
     store.id = row.id;
     store.arrangeVisible = true;
+  };
+
+  const handleRun = async (row: FormDataProps) => {
+    const res = await runApi(row.id);
+    console.log(res);
+    message("开发中...", { type: "info" });
   };
 
   onMounted(() => {
@@ -149,6 +162,7 @@ export const useLogic = () => {
     resetForm,
     handleDelete,
     handleArrange,
+    handleRun,
     store
   };
 };

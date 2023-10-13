@@ -56,8 +56,7 @@ export const useLogic = () => {
       new ReqPagerData(
         pagination.currentPage,
         pagination.pageSize,
-        queryFormData.search,
-        { enabled: queryFormData.enabled }
+        queryFormData.search
       )
     );
     dataList.value = data.list;
@@ -107,12 +106,11 @@ export const useLogic = () => {
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
-    queryFormData.enabled = null;
     queryFormData.search = "";
     onSearch();
   };
 
-  const queryFormData = reactive({ search: "", enabled: null });
+  const queryFormData = reactive({ search: "" });
 
   const handleDelete = async (row: FormDataProps) => {
     const res = await delApi(row.id);

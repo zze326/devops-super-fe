@@ -9,8 +9,9 @@ import {
   addApi,
   uptApi,
   getPageLstApi,
-  delApi
-} from "@/api/resource/kubernetes-config";
+  delApi,
+  ESecretTypeModel
+} from "@/api/resource/secret";
 import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
@@ -37,6 +38,11 @@ export const useLogic = () => {
       prop: "name"
     },
     {
+      label: "类型",
+      prop: "type",
+      formatter: (row: FormDataProps) => ESecretTypeModel.displayOf(row.type)
+    },
+    {
       label: "更新时间",
       prop: "updatedAt"
     },
@@ -57,7 +63,7 @@ export const useLogic = () => {
         pagination.currentPage,
         pagination.pageSize,
         queryFormData.search,
-        { enabled: queryFormData.enabled }
+        { type: queryFormData.type }
       )
     );
     dataList.value = data.list;
@@ -68,7 +74,7 @@ export const useLogic = () => {
   // 打开新增、编辑框
   const openDialog = async (title = "新增", row?: FormDataProps) => {
     addDialog({
-      title: `${title} Kubernetes Config`,
+      title: `${title}秘钥`,
       props: {
         formData: initValues(row)
       },
@@ -77,7 +83,13 @@ export const useLogic = () => {
       closeOnClickModal: false,
       contentRenderer: () => h(editForm, { ref: formRef }),
       beforeSure: async (done, { options }) => {
-        const ok = await (formRef.value.getRef() as FormInstance).validate();
+        const ok = (
+          await Promise.all(
+            (formRef.value.getRefs() as FormInstance[]).map(formRef =>
+              formRef.validate().catch(_ => false)
+            )
+          )
+        ).every(valid => valid === true);
         const formData = options.props.formData as FormDataProps;
         const chores = (result: Resp<null>) => {
           if (result.code !== 0) {
@@ -107,12 +119,12 @@ export const useLogic = () => {
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
-    queryFormData.enabled = null;
+    queryFormData.type = null;
     queryFormData.search = "";
     onSearch();
   };
 
-  const queryFormData = reactive({ search: "", enabled: null });
+  const queryFormData = reactive({ search: "", type: null });
 
   const handleDelete = async (row: FormDataProps) => {
     const res = await delApi(row.id);
@@ -134,6 +146,7 @@ export const useLogic = () => {
     columns,
     queryFormData,
     pagination,
+    ESecretTypeModel,
     openDialog,
     onSearch,
     resetForm,

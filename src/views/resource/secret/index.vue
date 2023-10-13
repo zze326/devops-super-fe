@@ -13,7 +13,7 @@ import { Permiss } from "./logic/types";
 import { hasAuth } from "@/router/utils";
 
 defineOptions({
-  name: "kubernetes-config-manage"
+  name: "secret-manage"
 });
 const queryFormRef = ref();
 
@@ -23,6 +23,7 @@ const {
   columns,
   queryFormData,
   pagination,
+  ESecretTypeModel,
   openDialog,
   onSearch,
   resetForm,
@@ -39,7 +40,7 @@ const {
       @submit.prevent
       class="search-form bg-bg_color w-[99/100] pl-8 pt-[12px]"
     >
-      <el-form-item label="名称：" prop="search">
+      <el-form-item label="秘钥名称：" prop="search">
         <el-input
           v-model="queryFormData.search"
           placeholder="请输入名称"
@@ -47,6 +48,21 @@ const {
           class="!w-[200px]"
           @keyup.enter="onSearch"
         />
+      </el-form-item>
+      <el-form-item label="秘钥类型：" prop="enabled">
+        <el-select
+          v-model="queryFormData.type"
+          placeholder="请选择类型"
+          clearable
+          class="!w-[180px]"
+        >
+          <el-option
+            :label="item.display"
+            :value="item.value"
+            :key="item.value"
+            v-for="item in ESecretTypeModel.getEnumList()"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -66,11 +82,7 @@ const {
       </el-form-item>
     </el-form>
 
-    <PureTableBar
-      title="Kubernetes Config 列表"
-      :columns="columns"
-      @refresh="onSearch"
-    >
+    <PureTableBar title="秘钥列表" :columns="columns" @refresh="onSearch">
       <template #buttons>
         <el-button
           v-auth="Permiss.ADD"
@@ -78,7 +90,7 @@ const {
           :icon="useRenderIcon(AddFill)"
           @click="openDialog()"
         >
-          新增 Kubernetes Config
+          新增秘钥
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">

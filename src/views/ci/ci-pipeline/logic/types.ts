@@ -1,5 +1,5 @@
 import { Model } from "@/api/ci/ci-pipeline";
-import { Model as KubernetesConfig } from "@/api/resource/kubernetes-config";
+import { Model as KubernetesConfig } from "@/api/resource/secret";
 type FormDataProps = Partial<Model>;
 
 interface FormProps {
@@ -14,5 +14,6 @@ export enum Permiss {
   ADD = "ci-pipeline-add",
   UPT = "ci-pipeline-upt",
   DEL = "ci-pipeline-del",
-  ARRANGE = "ci-pipeline-arrange"
+  ARRANGE = "ci-pipeline-arrange",
+  RUN = "ci-pipeline-run"
 }

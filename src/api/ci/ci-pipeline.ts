@@ -24,20 +24,23 @@ export const ETaskTypeModel = new EnumModel([
 // 任务数据结构
 export type Task = {
   type: ETaskType;
-  data: GitPullData | ShellExecData;
+  gitPullData?: Partial<GitPullData>;
+  shellExecData?: Partial<ShellExecData>;
 };
-
 // Git 拉取任务数据结构
 export type GitPullData = {
   gitUrl: string;
   branch: string;
+  secretId: number;
 };
 
 // Shell 执行任务数据结构
 export type ShellExecData = {
+  workDir: string;
   content: string;
 };
 
+// 流水线配置
 export type Config = ConfigEnvItem[];
 
 export type ConfigEnvItem = {
@@ -85,3 +88,7 @@ export const getConfigApi = (id: number) =>
     "get",
     `/ci-pipeline/${id}/config`
   );
+
+/** 运行流水线 */
+export const runApi = (id: number) =>
+  http.request<Resp<null>>("post", `/ci-pipeline/${id}/run`);

@@ -8,6 +8,7 @@ import Delete from "@iconify-icons/ep/delete";
 import EditPen from "@iconify-icons/ep/edit-pen";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
+import VideoPlay from "@iconify-icons/ep/video-play";
 import Operation from "@iconify-icons/ep/operation";
 import { useLogic } from "./logic/logic";
 import { Permiss } from "./logic/types";
@@ -30,6 +31,7 @@ const {
   resetForm,
   handleDelete,
   handleArrange,
+  handleRun,
   store
 } = useLogic();
 </script>
@@ -102,6 +104,17 @@ const {
           }"
         >
           <template #operation="{ row }">
+            <el-button
+              v-auth="Permiss.RUN"
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon(VideoPlay)"
+              @click="handleRun(row)"
+            >
+              运行
+            </el-button>
             <el-button
               v-auth="Permiss.ARRANGE"
               class="reset-margin"

@@ -198,7 +198,8 @@ function handleEnvTabsRemove(val: TabPaneName) {
 function newEmptyTask() {
   return {
     type: null,
-    data: null
+    gitPullData: {},
+    shellExecData: {}
   };
 }
 
@@ -428,7 +429,7 @@ const changed = computed(() => {
 // 初始化页面数据
 async function init() {
   const res = await getConfigApi(store.id);
-  if (res.data.config) {
+  if (res.data.config && res.data.config.length > 0) {
     res.data.config.forEach(envItem => {
       envItem.name = res.data.envMap[envItem.id];
       envItem.stages.forEach(stageItem => {

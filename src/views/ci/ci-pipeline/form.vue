@@ -3,7 +3,7 @@ import { ref } from "vue";
 import ReCol from "@/components/ReCol";
 import { FormProps } from "./logic/types";
 import { rules, initValues } from "./logic/form";
-import { Model as KubernetesConfig } from "@/api/resource/kubernetes-config";
+import { Model as KubernetesConfig } from "@/api/resource/secret";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formData: () => initValues(),
