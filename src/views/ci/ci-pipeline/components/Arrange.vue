@@ -216,6 +216,9 @@ function handleEnvSelectConfirm(envData: EnvModel) {
 // 切换环境
 function handleEnvTabsChange(_: TabPaneName) {
   if (!currentEnvTab.value.currentStageSort) {
+    (currentEnvTab.value.stages || []).forEach((item, index) => {
+      item.sort = index + 1;
+    });
     currentEnvTab.value.currentStageSort = currentEnvTab.value.stages.length;
   }
 }
