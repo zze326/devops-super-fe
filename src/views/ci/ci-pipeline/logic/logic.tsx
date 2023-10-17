@@ -3,7 +3,7 @@ import { addDialog } from "@/components/ReDialog";
 import { FormDataProps, Permiss } from "./types";
 import { initValues } from "./form";
 import { h, ref, onMounted, reactive } from "vue";
-import { FormInstance } from "element-plus";
+import { FormInstance, TableInstance } from "element-plus";
 import { message } from "@/utils/message";
 import {
   addApi,
@@ -18,7 +18,7 @@ import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
 import { useStore } from "./store";
 
-export const useLogic = () => {
+export const useLogic = tableRef => {
   const formRef = ref();
   const loading = ref(false);
   const dataList = ref([]);
@@ -32,10 +32,11 @@ export const useLogic = () => {
   });
 
   const columns: TableColumnList = [
-    // {
-    //   label: "编号",
-    //   prop: "id"
-    // },
+    {
+      label: "编号",
+      prop: "id",
+      minWidth: 60
+    },
     {
       label: "名称",
       prop: "name"
@@ -47,12 +48,13 @@ export const useLogic = () => {
     },
     {
       label: "更新时间",
-      prop: "updatedAt"
+      prop: "updatedAt",
+      width: "160"
     },
     {
       label: "操作",
       fixed: "right",
-      width: 280,
+      width: 265,
       slot: "operation",
       hide: !hasAuth(
         [Permiss.UPT, Permiss.DEL, Permiss.ARRANGE, Permiss.RUN],
@@ -121,6 +123,7 @@ export const useLogic = () => {
     if (!formEl) return;
     formEl.resetFields();
     queryFormData.search = "";
+    store.current = null;
     onSearch();
   };
 
@@ -143,7 +146,18 @@ export const useLogic = () => {
 
   const handleRun = async (row: FormDataProps) => {
     await runApi(row.id);
+    store.reloadHistory();
     message("运行成功", { type: "success" });
+  };
+
+  const handleRowClick = (row: FormDataProps) => {
+    if (store.current === row) {
+      (tableRef.value.getTableRef() as TableInstance).setCurrentRow(null);
+      store.current = null;
+    } else {
+      (tableRef.value.getTableRef() as TableInstance).setCurrentRow(row);
+      store.current = row;
+    }
   };
 
   onMounted(() => {
@@ -162,6 +176,8 @@ export const useLogic = () => {
     handleDelete,
     handleArrange,
     handleRun,
+    // handleCurrentChange,
+    handleRowClick,
     store
   };
 };

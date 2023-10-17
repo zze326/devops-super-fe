@@ -15,5 +15,6 @@ export enum Permiss {
   UPT = "ci-pipeline-upt",
   DEL = "ci-pipeline-del",
   ARRANGE = "ci-pipeline-arrange",
-  RUN = "ci-pipeline-run"
+  RUN = "ci-pipeline-run",
+  LOG = "ci-pipeline-run-log"
 }

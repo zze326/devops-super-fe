@@ -1,13 +1,20 @@
 import { defineStore } from "pinia";
+import { FormDataProps } from "./types";
 
 export const useStore = defineStore("ci-pipeline-manage", {
   state: () => {
     return {
       id: <number | null>null,
       arrangeVisible: false,
-      envSelectVisible: false
+      envSelectVisible: false,
+      current: <FormDataProps>null,
+      historyCounter: 0
     };
   },
   getters: {},
-  actions: {}
+  actions: {
+    reloadHistory() {
+      this.historyCounter++;
+    }
+  }
 });
