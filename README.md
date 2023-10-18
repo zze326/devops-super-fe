@@ -18,10 +18,11 @@
   - [x] 秘钥管理；
   - [x] 构建环境管理；
   - [x] 流水线管理（编排）；
-  - [ ] 运行流水线 & 构建流水线客户端镜像；
-  - [ ] 流水线实例展示；
-  - [ ] 获取流水线运行日志；
+  - [x] 运行流水线 & 构建流水线客户端镜像；
+  - [x] 流水线运行历史展示；
+  - [x] 获取流水线运行日志；
   - [ ] 流水线参数化支持；
+  - [ ] 支持挂载指定卷到指定目录；
 
 ## 预览地址
 
@@ -29,6 +30,8 @@
 
 - 管理员：`admin`，密码：`devops.zze`；
 - 测试账号：`test`，密码：`devops.zze`；
+
+> 数据库每小时自动重置。
 
 效果图：
 
@@ -42,6 +45,9 @@
 ![全屏终端](https://raw.githubusercontent.com/zze326/devops-super/main/resource/imgs/terminal-single.png)
 ![终端文件管理器](https://raw.githubusercontent.com/zze326/devops-super/main/resource/imgs/terminal-file-manager.png)
 ![终端主机树](https://raw.githubusercontent.com/zze326/devops-super/main/resource/imgs/terminal-tree.png)
+![流水线管理](https://raw.githubusercontent.com/zze326/devops-super/main/resource/imgs/pipeline-manage.png)
+![流水线编排](https://raw.githubusercontent.com/zze326/devops-super/main/resource/imgs/pipeline-arrange.png)
+![流水线日志](https://raw.githubusercontent.com/zze326/devops-super/main/resource/imgs/pipeline-log.png)
 
 ## 技术栈
 
