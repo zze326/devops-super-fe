@@ -15,14 +15,12 @@ import { getToken, formatToken, removeToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
 import { storageLocal, storageSession } from "@pureadmin/utils";
 import { resetRouter } from "@/router";
-import { toLogin } from "../generic";
+import { toLogin, getCurrentHost } from "../generic";
 import { message } from "../message";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
-  baseURL: import.meta.env.VITE_BASE_URL
-    ? `${window.location.protocol}//${import.meta.env.VITE_BASE_URL}`
-    : null,
+  baseURL: getCurrentHost(),
   // 请求超时时间
   timeout: 10000,
   headers: {

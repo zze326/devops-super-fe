@@ -53,3 +53,13 @@ export function formatBytes(bytes: number, decimals = 2): string {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
+
+// 获取当前 host，如 http://ds-demo.zze.xyz
+export function getCurrentHost(protocol = window.location.protocol) {
+  if (!import.meta.env.VITE_BASE_URL) {
+    return window.location.host;
+  } else {
+    if (!protocol.endsWith(":")) protocol = `${protocol}:`;
+    return `${protocol}//${import.meta.env.VITE_BASE_URL}`;
+  }
+}

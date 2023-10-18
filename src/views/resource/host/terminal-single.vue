@@ -88,7 +88,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { getWsProtocol, getHttpProtocol } from "@/utils/generic";
+import { getWsProtocol, getCurrentHost } from "@/utils/generic";
 import { getApi } from "@/api/resource/host";
 import FileManager from "./components/FileManager.vue";
 import { confirm } from "@/utils/generic";
@@ -111,7 +111,7 @@ const router = useRouter();
 const token = tokenInfo.token;
 const { id, mode } = router.currentRoute.value.query;
 const isReplayMode = mode === "replay";
-const wsUrl = `${getWsProtocol()}://${import.meta.env.VITE_BASE_URL}${
+const wsUrl = `${getCurrentHost(getWsProtocol())}${
   isReplayMode ? `/host-terminal-session/${id}/replay` : `/host/${id}/terminal`
 }?token=${token}`;
 const fileManagerRef = ref();
@@ -143,9 +143,9 @@ const padding_bottom = isReplayMode ? 30 : 0;
 // 处理终端ctrl+u，打开文件管理器
 const handleTerminalCtrlU = () => {
   if (!hasAuth(Permiss.TERMINAL_SFTP_READ)) return;
-  const wsUrl = `${getWsProtocol()}://${
-    import.meta.env.VITE_BASE_URL
-  }/host/${id}/sftp-file-manager?token=${token}`;
+  const wsUrl = `${getCurrentHost(
+    getWsProtocol()
+  )}/host/${id}/sftp-file-manager?token=${token}`;
   fileManagerState.wsUrl = wsUrl;
   fileManagerState.visible = true;
 };
@@ -158,9 +158,9 @@ const handleFileManagerClose = () => {
 // 处理下载文件
 const handleDownloadFile = async (path: string) => {
   window.open(
-    `${getHttpProtocol()}://${
-      import.meta.env.VITE_BASE_URL
-    }/host/${id}/download-file?path=${path}&token=${token}`
+    `${getCurrentHost(
+      getWsProtocol()
+    )}/host/${id}/download-file?path=${path}&token=${token}`
   );
 };
 

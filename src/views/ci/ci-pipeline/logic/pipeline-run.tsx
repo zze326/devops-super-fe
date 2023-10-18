@@ -7,7 +7,7 @@ import CheckboxCircleFill from "@iconify-icons/ri/checkbox-circle-fill";
 import CloseCircleFill from "@iconify-icons/ri/close-circle-fill";
 import BubbleLoading from "@/assets/svg/bubble-loading.svg?component";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getWsProtocol } from "@/utils/generic";
+import { getCurrentHost, getWsProtocol } from "@/utils/generic";
 import { getToken } from "@/utils/auth";
 
 export const useLogic = () => {
@@ -22,9 +22,9 @@ export const useLogic = () => {
   });
 
   const tokenInfo = getToken();
-  const wsUrl = `${getWsProtocol()}://${
-    import.meta.env.VITE_BASE_URL
-  }/ci-pipeline-run/page-list?token=${tokenInfo.token}`;
+  const wsUrl = `${getCurrentHost(
+    getWsProtocol()
+  )}/ci-pipeline-run/page-list?token=${tokenInfo.token}`;
 
   const ws = new WebSocket(wsUrl);
 
@@ -93,9 +93,9 @@ export const useLogic = () => {
   ];
 
   const handleLog = row => {
-    state.logWsUrl = `${getWsProtocol()}://${
-      import.meta.env.VITE_BASE_URL
-    }/ci-pipeline-run/${row.id}/log?token=${tokenInfo.token}`;
+    state.logWsUrl = `${getCurrentHost(getWsProtocol())}/ci-pipeline-run/${
+      row.id
+    }/log?token=${tokenInfo.token}`;
     state.logDrawerVisible = true;
   };
 

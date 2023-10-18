@@ -69,7 +69,8 @@ const init = () => {
     resizeTerminal();
   };
   terminalWs.onclose = () => {
-    console.log("连接已断开");
+    term.write("\x1b[31m" + "连接已断开" + "\x1b[0m");
+    resizeTerminal();
   };
   terminalWs.onmessage = e => {
     if (firstMessage) {

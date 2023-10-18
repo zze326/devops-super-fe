@@ -121,7 +121,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import { TabPaneName, TabsPaneContext } from "element-plus";
-import { getWsProtocol, getHttpProtocol } from "@/utils/generic";
+import { getWsProtocol, getCurrentHost } from "@/utils/generic";
 import SshTerminal from "./components/SshTerminal.vue";
 import {
   getLstApi as getHostGroupLstApi,
@@ -208,7 +208,7 @@ const handleFileManagerClose = () => {
 
 const handleTerminalCtrlU = () => {
   if (!hasAuth(Permiss.TERMINAL_SFTP_READ)) return;
-  const wsUrl = `${getWsProtocol()}://${import.meta.env.VITE_BASE_URL}/host/${
+  const wsUrl = `${getCurrentHost(getWsProtocol())}/host/${
     tabState.data[tabState.activeTab].name
   }/sftp-file-manager?token=${tokenInfo?.token}`;
   fileManagerState.wsUrl = wsUrl;
@@ -217,7 +217,7 @@ const handleTerminalCtrlU = () => {
 
 const handleDownloadFile = async (path: string) => {
   window.open(
-    `${getHttpProtocol()}://${import.meta.env.VITE_BASE_URL}/host/${
+    `${getCurrentHost(getWsProtocol())}/host/${
       tabState.data[tabState.activeTab].name
     }/download-file?path=${path}&token=${tokenInfo?.token}`
   );
@@ -280,7 +280,7 @@ const handleTabClick = (idx: TabsPaneContext) => {
 
 const handleNodeClick = (data: ITreeItem) => {
   if (data.isHost) {
-    const wsUrl = `${getWsProtocol()}://${import.meta.env.VITE_BASE_URL}/host/${
+    const wsUrl = `${getCurrentHost(getWsProtocol())}/host/${
       data.hostId
     }/terminal?token=${tokenInfo?.token}`;
     tabState.data.push({
