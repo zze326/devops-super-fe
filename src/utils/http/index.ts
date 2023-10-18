@@ -20,7 +20,7 @@ import { message } from "../message";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
-  baseURL: getCurrentHost(),
+  baseURL: import.meta.env.VITE_BASE_URL ? getCurrentHost() : null,
   // 请求超时时间
   timeout: 10000,
   headers: {
