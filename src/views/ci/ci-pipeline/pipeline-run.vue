@@ -12,7 +12,7 @@ const { loading, dataList, columns, pagination, state, onSearch, handleLog } =
 </script>
 <template>
   <PureTableBar
-    class="mt-0"
+    style="margin-top: 0"
     title="运行历史"
     :columns="columns"
     @refresh="onSearch"

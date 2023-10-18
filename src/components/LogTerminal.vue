@@ -3,10 +3,12 @@
 </template>
 
 <script lang="ts" setup>
+import { nextTick } from "process";
 import { ref, onMounted, onUnmounted } from "vue";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { WebLinksAddon } from "xterm-addon-web-links";
+import _ from "lodash";
 import "xterm/css/xterm.css";
 const props = defineProps({
   wsUrl: {
@@ -30,6 +32,7 @@ const term = new Terminal({
   convertEol: true,
   rightClickSelectsWord: true,
   allowTransparency: true,
+  rows: 45,
   theme: {
     foreground: "white",
     background: "#2B394C"
@@ -57,11 +60,16 @@ const init = () => {
   let firstMessage = true;
   term.open(terminalRef.value);
   term.focus();
+  nextTick(() => {
+    term.writeln("初始化中...");
+    resizeTerminal();
+    window.addEventListener("resize", _.debounce(resizeTerminal, 300));
+  });
   terminalWs.onopen = () => {
     resizeTerminal();
   };
   terminalWs.onclose = () => {
-    resizeTerminal();
+    console.log("连接已断开");
   };
   terminalWs.onmessage = e => {
     if (firstMessage) {

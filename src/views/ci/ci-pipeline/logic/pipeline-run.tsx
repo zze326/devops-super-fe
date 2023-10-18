@@ -1,7 +1,5 @@
 import { Permiss } from "./types";
 import { watch, ref, onMounted, reactive, h, onUnmounted } from "vue";
-import { getPageLstApi } from "@/api/ci/ci-pipeline-run";
-import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
 import { useStore } from "./store";
@@ -20,10 +18,15 @@ export const useLogic = () => {
   const state = reactive({
     logDrawerVisible: false,
     logWsUrl: "",
-    listInterval: null
+    pageLstInterval: null
   });
 
   const tokenInfo = getToken();
+  const wsUrl = `${getWsProtocol()}://${
+    import.meta.env.VITE_BASE_URL
+  }/ci-pipeline-run/page-list?token=${tokenInfo.token}`;
+
+  const ws = new WebSocket(wsUrl);
 
   const pagination = reactive<PaginationProps>({
     total: 0,
@@ -89,7 +92,14 @@ export const useLogic = () => {
     }
   ];
 
-  const onSearch = async () => {
+  const handleLog = row => {
+    state.logWsUrl = `${getWsProtocol()}://${
+      import.meta.env.VITE_BASE_URL
+    }/ci-pipeline-run/${row.id}/log?token=${tokenInfo.token}`;
+    state.logDrawerVisible = true;
+  };
+
+  const onSearch = () => {
     if (!hasAuth(Permiss.READ)) return;
     loading.value = true;
     let wheres = {};
@@ -98,36 +108,35 @@ export const useLogic = () => {
         pipelineId: store.current.id
       };
     }
-    const { data } = await getPageLstApi(
-      new ReqPagerData(
-        pagination.currentPage,
-        pagination.pageSize,
-        null,
-        wheres
-      )
-    );
-    dataList.value = data.list;
-    pagination.total = data.total;
-    loading.value = false;
+    const reqData = {
+      page: pagination.currentPage,
+      pageSize: pagination.pageSize,
+      wheres
+    };
+    ws.send(JSON.stringify(reqData));
   };
 
   watch(() => store.current, onSearch);
   watch(() => store.historyCounter, onSearch);
 
-  const handleLog = row => {
-    state.logWsUrl = `${getWsProtocol()}://${
-      import.meta.env.VITE_BASE_URL
-    }/ci-pipeline-run/${row.id}/log?token=${tokenInfo.token}`;
-    state.logDrawerVisible = true;
-  };
-
   onMounted(() => {
-    onSearch();
-    state.listInterval = setInterval(onSearch, 7000);
+    ws.onopen = () => {
+      onSearch();
+      state.pageLstInterval = setInterval(onSearch, 5000);
+    };
+    ws.onclose = () => {
+      console.log("连接已断开");
+    };
+    ws.onmessage = e => {
+      const data = JSON.parse(e.data);
+      dataList.value = data.list;
+      pagination.total = data.total;
+      loading.value = false;
+    };
   });
 
   onUnmounted(() => {
-    clearInterval(state.listInterval);
+    ws.close();
   });
 
   return {
