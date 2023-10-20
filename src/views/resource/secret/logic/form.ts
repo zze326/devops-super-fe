@@ -2,7 +2,7 @@ import { reactive } from "vue";
 import type { FormRules } from "element-plus";
 import { FormDataProps } from "./types";
 import { ESecretType } from "@/api/resource/secret";
-import { testConnectKubernetesApi } from "@/api/common/kubernetes";
+import { testConnectApi } from "@/api/common/kubernetes";
 
 /** 自定义表单规则校验 */
 export const rules = reactive(<FormRules>{
@@ -20,10 +20,10 @@ export const kubernetesConfigRules = reactive(<FormRules>{
     },
     {
       validator: async (_rule, value, _callback) => {
-        await testConnectKubernetesApi({ config: value });
+        await testConnectApi({ config: value });
         return true;
       },
-      trigger: "change"
+      trigger: "blur"
     }
   ]
 });
