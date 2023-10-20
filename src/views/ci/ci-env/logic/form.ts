@@ -39,6 +39,13 @@ export const persistenceFormRules = reactive<FormRules>({
       message: "挂载路径必须是绝对路径",
       trigger: "blur"
     }
+  ],
+  subPath: [
+    {
+      pattern: /^(?!\/)(?:[^/]+\/)*[^/]+$/,
+      message: "挂载子路径必须是相对路径",
+      trigger: "blur"
+    }
   ]
 });
 
