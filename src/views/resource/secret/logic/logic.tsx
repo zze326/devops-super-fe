@@ -76,7 +76,8 @@ export const useLogic = () => {
     addDialog({
       title: `${title}秘钥`,
       props: {
-        formData: initValues(row)
+        formData: initValues(row),
+        isEdit: title === "编辑"
       },
       width: "36%",
       draggable: true,

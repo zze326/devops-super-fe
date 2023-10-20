@@ -11,7 +11,8 @@ import {
 } from "@/api/resource/secret";
 
 const props = withDefaults(defineProps<FormProps>(), {
-  formData: () => initValues()
+  formData: () => initValues(),
+  isEdit: Boolean
 });
 
 const formRef = ref();
@@ -40,6 +41,7 @@ defineExpose({ getRefs });
         <el-form-item label="秘钥类型" prop="type">
           <el-radio-group v-model="formData.type">
             <el-radio-button
+              :disabled="isEdit"
               v-for="item in ESecretTypeModel.getEnumList()"
               :key="item.value"
               :label="item.value"

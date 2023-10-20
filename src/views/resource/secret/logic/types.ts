@@ -3,6 +3,7 @@ type FormDataProps = Partial<Model>;
 
 interface FormProps {
   formData: FormDataProps;
+  isEdit: boolean;
 }
 
 export type { FormDataProps, FormProps };
