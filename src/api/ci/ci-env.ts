@@ -5,6 +5,14 @@ export type Model = {
   name: string;
   image: string;
   secretName: string;
+  persistenceConfig: PersistenceConfig;
+};
+export type PersistenceConfig = PersistenceConfigItem[];
+
+export type PersistenceConfigItem = {
+  pvcName: string;
+  mountPath: string;
+  subPath: string;
 };
 
 /** 新增构建环境 */

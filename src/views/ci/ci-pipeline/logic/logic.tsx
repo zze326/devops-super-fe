@@ -95,7 +95,7 @@ export const useLogic = tableRef => {
       closeOnClickModal: false,
       contentRenderer: () => h(editForm, { ref: formRef }),
       beforeSure: async (done, { options }) => {
-        const ok = await formRef.value.validateAllForms();
+        const ok = await formRef.value.validate();
         const formData = options.props.formData as FormDataProps;
         const chores = (result: Resp<null>) => {
           if (result.code !== 0) {
