@@ -12,7 +12,10 @@ import {
   delApi,
   runApi
 } from "@/api/ci/ci-pipeline";
-import { getLstApi as getSecretList, ESecretType } from "@/api/resource/secret";
+import {
+  getLstApi as getSecretListApi,
+  ESecretType
+} from "@/api/resource/secret";
 import { ReqPagerData } from "@/utils/pager";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
@@ -80,7 +83,7 @@ export const useLogic = tableRef => {
 
   // 打开新增、编辑框
   const openDialog = async (title = "新增", row?: FormDataProps) => {
-    const res = await getSecretList({ type: ESecretType.KUBERNETES_CONFIG });
+    const res = await getSecretListApi({ type: ESecretType.KUBERNETES_CONFIG });
     addDialog({
       title: `${title}流水线`,
       props: {
