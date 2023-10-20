@@ -3,7 +3,7 @@ import { addDialog } from "@/components/ReDialog";
 import { FormDataProps, Permiss } from "./types";
 import { initValues } from "./form";
 import { h, ref, onMounted, reactive } from "vue";
-import { FormInstance, TableInstance } from "element-plus";
+import { TableInstance } from "element-plus";
 import { message } from "@/utils/message";
 import {
   addApi,
@@ -95,7 +95,7 @@ export const useLogic = tableRef => {
       closeOnClickModal: false,
       contentRenderer: () => h(editForm, { ref: formRef }),
       beforeSure: async (done, { options }) => {
-        const ok = await (formRef.value.getRef() as FormInstance).validate();
+        const ok = await formRef.value.validateAllForms();
         const formData = options.props.formData as FormDataProps;
         const chores = (result: Resp<null>) => {
           if (result.code !== 0) {

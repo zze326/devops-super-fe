@@ -8,6 +8,7 @@ export type Model = {
   kubernetesConfigId: number;
   kubernetesNamespace: string;
   config: Config;
+  persistenceConfig: PersistenceConfig;
 };
 
 // 任务类型
@@ -43,6 +44,7 @@ export type ShellExecData = {
 
 // 流水线配置
 export type Config = ConfigEnvItem[];
+export type PersistenceConfig = PersistenceConfigItem[];
 
 export type ConfigEnvItem = {
   id: number;
@@ -53,6 +55,11 @@ export type ConfigEnvItem = {
 export type ConfigEnvStageItem = {
   name: string;
   tasks: Task[];
+};
+
+export type PersistenceConfigItem = {
+  pvcName: string;
+  mountPath: string;
 };
 
 /** 新增流水线 */
