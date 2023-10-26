@@ -50,7 +50,7 @@ const {
           <el-button
             v-auth="Permiss.LOG"
             class="reset-margin"
-            v-if="row.status !== 3"
+            :disabled="row.status === 3"
             link
             type="primary"
             :size="size"

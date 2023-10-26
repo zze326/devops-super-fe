@@ -8,7 +8,7 @@ defineOptions({
 </script>
 <template>
   <div class="main">
-    <el-row :gutter="30">
+    <el-row :gutter="24">
       <re-col :value="12" :xs="24" :sm="24">
         <Pipeline />
       </re-col>

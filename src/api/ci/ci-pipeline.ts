@@ -7,6 +7,8 @@ export type Model = {
   desc: string;
   kubernetesConfigId: number;
   kubernetesNamespace: string;
+  parameterize: boolean;
+  params: Param[];
   config: Config;
 };
 
@@ -21,6 +23,37 @@ export const ETaskTypeModel = new EnumModel([
   { value: ETaskType.GIT_PULL, display: "Git 拉取" },
   { value: ETaskType.SHELL_EXEC, display: "Shell 执行" }
 ]);
+
+// 参数类型
+export enum EParamType {
+  GIT_BRANCH = 1,
+  ENUM_LIST = 2,
+  STRING = 3,
+  BOOLEAN = 4
+}
+
+// 参数类型枚举
+export const EParamTypeModel = new EnumModel([
+  { value: EParamType.GIT_BRANCH, display: "Git 分支" },
+  { value: EParamType.ENUM_LIST, display: "枚举列表" },
+  { value: EParamType.STRING, display: "字符串" },
+  { value: EParamType.BOOLEAN, display: "布尔值" }
+]);
+
+// 参数结构
+export type Param = {
+  type: EParamType;
+  name: string;
+  display: string;
+  gitBranchData?: GitBranchParamData;
+  enumListData?: string[];
+};
+
+// Git 分支类型的参数数据结构
+export type GitBranchParamData = {
+  gitUrl: string;
+  secretId: number;
+};
 
 // 任务数据结构
 export type Task = {

@@ -15,15 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  reactive,
-  toRefs,
-  onMounted,
-  ref,
-  onUnmounted,
-  nextTick,
-  defineExpose
-} from "vue";
+import { reactive, toRefs, onMounted, ref, onUnmounted, nextTick } from "vue";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { WebLinksAddon } from "xterm-addon-web-links";

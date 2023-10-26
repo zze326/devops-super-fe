@@ -93,6 +93,16 @@ init();
           </el-form-item>
         </re-col>
         <re-col :xs="24" :sm="24">
+          <ElFormItem label="参数化" prop="parameterize">
+            <el-switch
+              inline-prompt
+              active-text="是"
+              inactive-text="否"
+              v-model="formData.parameterize"
+            />
+          </ElFormItem>
+        </re-col>
+        <re-col :xs="24" :sm="24">
           <ElFormItem label="描述" prop="desc">
             <el-input
               show-word-limit

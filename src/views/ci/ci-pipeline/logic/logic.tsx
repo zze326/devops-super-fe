@@ -144,6 +144,7 @@ export const useLogic = tableRef => {
 
   const handleArrange = (row: FormDataProps) => {
     store.id = row.id;
+    store.arrangeCurrent = row;
     store.arrangeVisible = true;
   };
 

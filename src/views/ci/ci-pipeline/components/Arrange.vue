@@ -1,129 +1,163 @@
 <template>
-  <el-drawer v-model="store.arrangeVisible" title="编排流水线" size="50%">
-    <el-tabs
-      class="h-[95%] overflow-scroll"
-      type="card"
-      v-model="state.currentEnvSort"
-      stretch
-      editable
-      @tab-add="handleEnvTabsAdd"
-      @tab-remove="handleEnvTabsRemove"
-      @tab-change="handleEnvTabsChange"
-    >
-      <el-tab-pane
-        v-for="envTab in state.envTabs"
-        :name="envTab.sort"
-        :key="envTab.sort"
-        :label="`环境${envTab.sort}.${envTab.name}`"
-      >
-        <el-tabs
-          v-model="envTab.currentStageSort"
+  <el-drawer
+    v-model="store.arrangeVisible"
+    title="编排流水线"
+    :size="isParameterize ? '70%' : '50%'"
+  >
+    <el-row class="h-[100%]" :gutter="isParameterize ? 24 : 0">
+      <el-col v-if="isParameterize" :span="7">
+        <p class="text-center">
+          <el-text tag="b" style="color: var(--el-color-primary)"
+            >构建参数</el-text
+          >
+        </p>
+
+        <div :key="paramIdx" v-for="(param, paramIdx) in state.params">
+          <el-divider content-position="center">
+            参数 {{ paramIdx + 1 }}
+          </el-divider>
+          <ParamForm ref="paramFormRef" :data="param" />
+          <p style="text-align: center">
+            <el-button
+              :icon="useRenderIcon(Plus)"
+              circle
+              type="success"
+              @click="handleParamAdd(paramIdx)"
+            />
+            <el-button
+              :icon="useRenderIcon(Minus)"
+              circle
+              type="danger"
+              @click="handleParamRemove(paramIdx)"
+            />
+          </p>
+        </div>
+      </el-col>
+      <el-col :span="isParameterize ? 17 : 24"
+        ><el-tabs
+          class="h-[94%]"
+          type="card"
+          v-model="state.currentEnvSort"
+          stretch
           editable
-          tab-position="left"
-          @tab-add="handleStageTabsAdd"
-          @tab-remove="handleStageTabsRemove"
+          @tab-add="handleEnvTabsAdd"
+          @tab-remove="handleEnvTabsRemove"
+          @tab-change="handleEnvTabsChange"
         >
           <el-tab-pane
-            v-for="stageTab in envTab.stages"
-            :key="stageTab.sort"
-            :name="stageTab.sort"
-            :label="`阶段${stageTab.sort}.${stageTab.name}`"
+            v-for="envTab in state.envTabs"
+            :name="envTab.sort"
+            :key="envTab.sort"
+            :label="`环境${envTab.sort}.${envTab.name}`"
           >
-            <ElForm
-              ref="stageFormRef"
-              :model="stageTab"
-              :rules="{
-                name: [
-                  {
-                    required: true,
-                    message: '阶段名称为必填项',
-                    trigger: 'blur'
-                  }
-                ]
-              }"
-              label-width="80px"
+            <el-tabs
+              v-model="envTab.currentStageSort"
+              editable
+              tab-position="left"
+              @tab-add="handleStageTabsAdd"
+              @tab-remove="handleStageTabsRemove"
             >
-              <el-row>
-                <el-col :span="16">
-                  <ElFormItem label="阶段名称" prop="name">
-                    <el-input
-                      show-word-limit
-                      maxlength="20"
-                      v-model="stageTab.name"
-                      placeholder="请输入阶段名称"
+              <el-tab-pane
+                v-for="stageTab in envTab.stages"
+                :key="stageTab.sort"
+                :name="stageTab.sort"
+                :label="`阶段${stageTab.sort}.${stageTab.name}`"
+              >
+                <ElForm
+                  ref="stageFormRef"
+                  :model="stageTab"
+                  :rules="{
+                    name: [
+                      {
+                        required: true,
+                        message: '阶段名称为必填项',
+                        trigger: 'blur'
+                      }
+                    ]
+                  }"
+                  label-width="80px"
+                >
+                  <el-row>
+                    <el-col :span="16">
+                      <ElFormItem label="阶段名称" prop="name">
+                        <el-input
+                          show-word-limit
+                          maxlength="20"
+                          v-model="stageTab.name"
+                          placeholder="请输入阶段名称"
+                        />
+                      </ElFormItem>
+                    </el-col>
+                  </el-row>
+                </ElForm>
+                <div :key="taskIdx" v-for="(task, taskIdx) in stageTab.tasks">
+                  <el-divider content-position="center">
+                    任务 {{ taskIdx + 1 }}
+                  </el-divider>
+                  <TaskForm ref="taskFormRef" :data="task" />
+                  <p style="text-align: center">
+                    <el-button
+                      :icon="useRenderIcon(Plus)"
+                      circle
+                      type="success"
+                      @click="handleTaskAdd(stageTab, taskIdx)"
                     />
-                  </ElFormItem>
-                </el-col>
-              </el-row>
-            </ElForm>
-            <div :key="taskIdx" v-for="(task, taskIdx) in stageTab.tasks">
-              <el-divider content-position="center">
-                任务 {{ taskIdx + 1 }}
-              </el-divider>
-              <TaskForm ref="taskFormRef" :data="task" />
-              <p style="text-align: center">
-                <el-button
-                  :icon="useRenderIcon(Plus)"
-                  circle
-                  type="success"
-                  @click="handleTaskAdd(stageTab, taskIdx)"
-                />
-                <el-button
-                  :icon="useRenderIcon(Minus)"
-                  circle
-                  type="danger"
-                  @click="handleTaskRemove(stageTab, taskIdx)"
-                />
-              </p>
-            </div>
+                    <el-button
+                      :icon="useRenderIcon(Minus)"
+                      circle
+                      type="danger"
+                      @click="handleTaskRemove(stageTab, taskIdx)"
+                    />
+                  </p>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
           </el-tab-pane>
         </el-tabs>
-      </el-tab-pane>
-    </el-tabs>
-    <div class="w-[100%] mt-2 text-center">
-      <el-button
-        :icon="useRenderIcon(ArrowUp)"
-        :disabled="currentStage.sort <= 1 || currentStage.sort === 0"
-        @click="handleUp"
-        round
-        >向上移动</el-button
-      >
-      <el-button
-        :icon="useRenderIcon(ArrowLeft)"
-        :disabled="state.currentEnvSort <= 1 || state.currentEnvSort === 0"
-        @click="handleLeft"
-        >向左移动</el-button
-      >
-      <el-button type="success" :disabled="!changed" @click="handleSave"
-        >保存</el-button
-      >
-      <el-button
-        :icon="useRenderIcon(ArrowRight)"
-        :disabled="
-          state.currentEnvSort >= state.envTabs.length ||
-          state.currentEnvSort === 0
-        "
-        @click="handleRight"
-        >向右移动</el-button
-      >
-      <el-button
-        :icon="useRenderIcon(ArrowDown)"
-        :disabled="
-          currentStage.sort >=
-            (currentEnvTab?.stages ? currentEnvTab?.stages.length : 0) ||
-          currentStage.sort === 0
-        "
-        @click="handleDown"
-        round
-        >向下移动</el-button
-      >
-    </div>
-
-    <EnvSelect
-      v-if="store.envSelectVisible"
-      @confirm="handleEnvSelectConfirm"
-      @cancel="handleEnvSelectCancel"
-    />
+        <div class="w-[100%] mt-5 text-center">
+          <el-button
+            :icon="useRenderIcon(ArrowUp)"
+            :disabled="currentStage.sort <= 1 || currentStage.sort === 0"
+            @click="handleUp"
+            round
+            >向上移动</el-button
+          >
+          <el-button
+            :icon="useRenderIcon(ArrowLeft)"
+            :disabled="state.currentEnvSort <= 1 || state.currentEnvSort === 0"
+            @click="handleLeft"
+            >向左移动</el-button
+          >
+          <el-button type="success" :disabled="!changed" @click="handleSave"
+            >保存</el-button
+          >
+          <el-button
+            :icon="useRenderIcon(ArrowRight)"
+            :disabled="
+              state.currentEnvSort >= state.envTabs.length ||
+              state.currentEnvSort === 0
+            "
+            @click="handleRight"
+            >向右移动</el-button
+          >
+          <el-button
+            :icon="useRenderIcon(ArrowDown)"
+            :disabled="
+              currentStage.sort >=
+                (currentEnvTab?.stages ? currentEnvTab?.stages.length : 0) ||
+              currentStage.sort === 0
+            "
+            @click="handleDown"
+            round
+            >向下移动</el-button
+          >
+        </div>
+        <EnvSelect
+          v-if="store.envSelectVisible"
+          @confirm="handleEnvSelectConfirm"
+          @cancel="handleEnvSelectCancel"
+      /></el-col>
+    </el-row>
   </el-drawer>
 </template>
 
@@ -131,9 +165,10 @@
 import { useStore } from "../logic/store";
 import { reactive, onMounted, watch, computed, getCurrentInstance } from "vue";
 import { Model as EnvModel } from "@/api/ci/ci-env";
-import { uptConfigApi, getConfigApi, Task } from "@/api/ci/ci-pipeline";
+import { uptConfigApi, getConfigApi, Task, Param } from "@/api/ci/ci-pipeline";
 import EnvSelect from "./EnvSelect.vue";
 import TaskForm from "./TaskForm.vue";
+import ParamForm from "./ParamForm.vue";
 import { cloneDeep } from "@pureadmin/utils";
 import { TabPaneName } from "element-plus/es/components/tabs/src/tabs";
 import { message } from "@/utils/message";
@@ -155,15 +190,21 @@ type EnvTab = Partial<{
   stages: StageTab[];
   currentStageSort: number;
 }>;
+
 const store = useStore();
+
+const isParameterize = store.arrangeCurrent.parameterize;
+
 const state = reactive<{
   envTabs: EnvTab[];
   currentEnvSort: number;
   changePoint: string;
+  params: Param[];
 }>({
   envTabs: [],
   currentEnvSort: 0,
-  changePoint: ""
+  changePoint: "",
+  params: cloneDeep(store.arrangeCurrent.params) || []
 });
 
 const appInstance = getCurrentInstance();
@@ -373,30 +414,41 @@ const validateAllForms = async () => {
     validatePromiseArr.push(formRef.validate().catch(_ => false));
   }
 
+  for (const formRef of appInstance?.refs[
+    "paramFormRef"
+  ] as Array<FormInstance>) {
+    validatePromiseArr.push(formRef.validate().catch(_ => false));
+  }
+
   return (await Promise.all(validatePromiseArr)).every(item => item === true);
 };
 
 // 保存
 const handleSave = async () => {
-  console.log(state.envTabs);
   if (!(await validateAllForms())) {
     message("表单校验不通过", { type: "warning" });
     return;
   }
   const reqData = getRequestData();
-  await uptConfigApi(store.id, { config: reqData });
+  await uptConfigApi(store.id, reqData);
   setChangePoint();
+  store.arrangeCurrent.params = state.params;
   message(`保存成功`, { type: "success" });
 };
 
 // 将当前页面数据整理成请求格式数据
 function getRequestData() {
-  return state.envTabs.map(envTab => {
-    return {
-      id: envTab.id,
-      stages: envTab.stages.map(stageTab => _.pick(stageTab, ["name", "tasks"]))
-    };
-  });
+  return {
+    config: state.envTabs.map(envTab => {
+      return {
+        id: envTab.id,
+        stages: envTab.stages.map(stageTab =>
+          _.pick(stageTab, ["name", "tasks"])
+        )
+      };
+    }),
+    params: state.params
+  };
 }
 
 // 当环境 tabs 长度变化时重新计算 sort
@@ -429,6 +481,29 @@ const changed = computed(() => {
   return JSON.stringify(getRequestData()) !== state.changePoint;
 });
 
+// 创建空参数
+function newEmptyParam(): Param {
+  return {
+    type: null,
+    name: "",
+    display: ""
+  };
+}
+
+// 新增参数
+const handleParamAdd = (idx: number) => {
+  state.params.splice(idx + 1, 0, newEmptyParam());
+};
+
+// 移除参数
+const handleParamRemove = (idx: number) => {
+  if (state.params.length === 1) {
+    message("最起码保留一个参数", { type: "warning" });
+    return;
+  }
+  state.params.splice(idx, 1);
+};
+
 // 初始化页面数据
 async function init() {
   const res = await getConfigApi(store.id);
@@ -445,6 +520,7 @@ async function init() {
     state.currentEnvSort = state.envTabs.length;
     currentEnvTab.value.currentStageSort = currentEnvTab.value.stages.length;
   }
+  state.params = state.params || [newEmptyParam()];
   // 记录初始数据，用于对比是否有更改
   setChangePoint();
   state.envTabs.length === 0 && handleEnvTabsAdd();
