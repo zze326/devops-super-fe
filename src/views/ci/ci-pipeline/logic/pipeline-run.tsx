@@ -3,12 +3,14 @@ import { watch, ref, onMounted, reactive, h, onUnmounted } from "vue";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
 import { useStore } from "./store";
+import { cancelApi } from "@/api/ci/ci-pipeline-run";
 import CheckboxCircleFill from "@iconify-icons/ri/checkbox-circle-fill";
 import CloseCircleFill from "@iconify-icons/ri/close-circle-fill";
 import BubbleLoading from "@/assets/svg/bubble-loading.svg?component";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { getCurrentHost, getWsProtocol } from "@/utils/generic";
 import { getToken } from "@/utils/auth";
+import { message } from "@/utils/message";
 
 export const useLogic = () => {
   const loading = ref(false);
@@ -54,13 +56,15 @@ export const useLogic = () => {
         const statusColor = {
           0: "gray",
           1: "#55B63D",
-          2: "#EC3E45"
+          2: "#EC3E45",
+          3: "gray"
         };
 
         const statusIcon = {
           0: BubbleLoading,
           1: CheckboxCircleFill,
-          2: CloseCircleFill
+          2: CloseCircleFill,
+          3: CloseCircleFill
         };
         return (
           <p class="flex justify-center">
@@ -86,7 +90,8 @@ export const useLogic = () => {
     {
       label: "操作",
       fixed: "right",
-      width: 80,
+      align: "center",
+      width: 138,
       slot: "operation",
       hide: !hasAuth([Permiss.LOG], true)
     }
@@ -97,6 +102,12 @@ export const useLogic = () => {
       row.id
     }/log?token=${tokenInfo.token}`;
     state.logDrawerVisible = true;
+  };
+
+  const handleCancel = async row => {
+    await cancelApi(row.id);
+    onSearch();
+    message("操作成功", { type: "success" });
   };
 
   const onSearch = () => {
@@ -147,6 +158,7 @@ export const useLogic = () => {
     store,
     state,
     onSearch,
-    handleLog
+    handleLog,
+    handleCancel
   };
 };

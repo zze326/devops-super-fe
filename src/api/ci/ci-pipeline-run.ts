@@ -18,3 +18,10 @@ export const getPageLstApi = (data: IReqPagerData) =>
       params: data
     }
   );
+
+/** 取消运行中的流水线 */
+export const cancelApi = (id: number) =>
+  http.request<Resp<IRespPagerData<Model>>>(
+    "delete",
+    `/ci-pipeline-run/${id}/cancel`
+  );

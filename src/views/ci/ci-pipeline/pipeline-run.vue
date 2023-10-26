@@ -2,13 +2,22 @@
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import Log24 from "@/assets/svg/log-24.svg?component";
+import Close from "@iconify-icons/ri/close-circle-line";
 import { useLogic } from "./logic/pipeline-run";
 import { Permiss } from "./logic/types";
 import { hasAuth } from "@/router/utils";
 import Log from "@/components/LogTerminal.vue";
 
-const { loading, dataList, columns, pagination, state, onSearch, handleLog } =
-  useLogic();
+const {
+  loading,
+  dataList,
+  columns,
+  pagination,
+  state,
+  onSearch,
+  handleLog,
+  handleCancel
+} = useLogic();
 </script>
 <template>
   <PureTableBar
@@ -41,6 +50,7 @@ const { loading, dataList, columns, pagination, state, onSearch, handleLog } =
           <el-button
             v-auth="Permiss.LOG"
             class="reset-margin"
+            v-if="row.status !== 3"
             link
             type="primary"
             :size="size"
@@ -48,6 +58,18 @@ const { loading, dataList, columns, pagination, state, onSearch, handleLog } =
             @click="handleLog(row)"
           >
             日志
+          </el-button>
+          <el-button
+            v-auth="Permiss.CANCEL"
+            v-if="row.status === 0"
+            class="reset-margin"
+            link
+            type="primary"
+            :size="size"
+            :icon="useRenderIcon(Close)"
+            @click="handleCancel(row)"
+          >
+            取消
           </el-button>
         </template>
       </pure-table>
