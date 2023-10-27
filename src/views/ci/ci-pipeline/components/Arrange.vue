@@ -402,22 +402,28 @@ const handleTaskRemove = (stage: StageTab, idx: number) => {
 // 校验所有的表单
 const validateAllForms = async () => {
   const validatePromiseArr = [];
-  for (const formRef of appInstance?.refs[
-    "stageFormRef"
-  ] as Array<FormInstance>) {
-    validatePromiseArr.push(formRef.validate().catch(_ => false));
+  if (appInstance?.refs["stageFormRef"]) {
+    for (const formRef of appInstance?.refs[
+      "stageFormRef"
+    ] as Array<FormInstance>) {
+      validatePromiseArr.push(formRef.validate().catch(_ => false));
+    }
   }
 
-  for (const formRef of appInstance?.refs[
-    "taskFormRef"
-  ] as Array<FormInstance>) {
-    validatePromiseArr.push(formRef.validate().catch(_ => false));
+  if (appInstance?.refs["taskFormRef"]) {
+    for (const formRef of appInstance?.refs[
+      "taskFormRef"
+    ] as Array<FormInstance>) {
+      validatePromiseArr.push(formRef.validate().catch(_ => false));
+    }
   }
 
-  for (const formRef of appInstance?.refs[
-    "paramFormRef"
-  ] as Array<FormInstance>) {
-    validatePromiseArr.push(formRef.validate().catch(_ => false));
+  if (appInstance?.refs["paramFormRef"]) {
+    for (const formRef of appInstance?.refs[
+      "paramFormRef"
+    ] as Array<FormInstance>) {
+      validatePromiseArr.push(formRef.validate().catch(_ => false));
+    }
   }
 
   return (await Promise.all(validatePromiseArr)).every(item => item === true);

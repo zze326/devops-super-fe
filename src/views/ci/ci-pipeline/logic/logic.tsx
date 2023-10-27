@@ -1,4 +1,5 @@
 import editForm from "../form.vue";
+import parameterizeForm from "../parameterize-form.vue";
 import { addDialog } from "@/components/ReDialog";
 import { FormDataProps, Permiss } from "./types";
 import { initValues } from "./form";
@@ -122,6 +123,32 @@ export const useLogic = tableRef => {
     });
   };
 
+  const openParameterizeDialog = (row?: FormDataProps) => {
+    addDialog({
+      title: "运行流水线",
+      props: {
+        baseData: row.params,
+        formData: {}
+      },
+      width: "20%",
+      draggable: true,
+      closeOnClickModal: false,
+      contentRenderer: () => h(parameterizeForm, { ref: formRef }),
+      beforeSure: async (done, { options }) => {
+        const ok = await formRef.value.validate();
+        if (!ok) {
+          return;
+        }
+        const formData = options.props.formData;
+
+        await runApi(row.id, formData);
+        store.reloadHistory();
+        message("运行成功", { type: "success" });
+        done();
+      }
+    });
+  };
+
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
@@ -149,9 +176,13 @@ export const useLogic = tableRef => {
   };
 
   const handleRun = async (row: FormDataProps) => {
-    await runApi(row.id);
-    store.reloadHistory();
-    message("运行成功", { type: "success" });
+    if (row.parameterize) {
+      openParameterizeDialog(row);
+    } else {
+      await runApi(row.id);
+      store.reloadHistory();
+      message("运行成功", { type: "success" });
+    }
   };
 
   const handleRowClick = (row: FormDataProps) => {

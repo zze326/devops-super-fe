@@ -45,14 +45,9 @@ export type Param = {
   type: EParamType;
   name: string;
   display: string;
-  gitBranchData?: GitBranchParamData;
   enumListData?: string[];
-};
-
-// Git 分支类型的参数数据结构
-export type GitBranchParamData = {
-  gitUrl: string;
-  secretId: number;
+  gitUrl?: string;
+  secretId?: number;
 };
 
 // 任务数据结构
@@ -124,5 +119,7 @@ export const getConfigApi = (id: number) =>
   );
 
 /** 运行流水线 */
-export const runApi = (id: number) =>
-  http.request<Resp<null>>("post", `/ci-pipeline/${id}/run`);
+export const runApi = (id: number, params = {}) =>
+  http.request<Resp<null>>("post", `/ci-pipeline/${id}/run`, {
+    data: { params }
+  });

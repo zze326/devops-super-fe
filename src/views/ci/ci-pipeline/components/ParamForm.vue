@@ -1,5 +1,10 @@
 <template>
-  <ElForm ref="formRef" :model="data" :rules="rules" label-width="80px">
+  <ElForm
+    ref="formRef"
+    :model="data"
+    :rules="getRules(data)"
+    label-width="80px"
+  >
     <ElFormItem label="类型" prop="type">
       <el-select v-model="data.type" clearable placeholder="请选择参数类型">
         <el-option
@@ -80,7 +85,8 @@ import {
   Model as SecretModel,
   ESecretType
 } from "@/api/resource/secret";
-import { computed, ref, onMounted, reactive } from "vue";
+import { getGitBranchLstApi } from "@/api/common/common";
+import { ref, onMounted, reactive } from "vue";
 
 import _ from "lodash";
 import { FormInstance } from "element-plus";
@@ -115,7 +121,7 @@ defineExpose({
   validate: validateForm
 });
 
-const rules = computed(() => {
+const getRules = (data: Param) => {
   const globalRules = {
     type: [{ required: true, message: "参数类型为必选项", trigger: "blur" }],
     name: [{ required: true, message: "参数名称为必填项", trigger: "blur" }],
@@ -132,6 +138,15 @@ const rules = computed(() => {
         message: "请输入合法的 Git URL",
         trigger: "blur"
       }
+    ],
+    secretId: [
+      {
+        validator: async (_rule, _value, _callback) => {
+          await getGitBranchLstApi(data.gitUrl, data.secretId);
+          return true;
+        },
+        trigger: "change"
+      }
     ]
   };
 
@@ -145,7 +160,7 @@ const rules = computed(() => {
     default:
       return globalRules;
   }
-});
+};
 
 const init = async () => {
   const res = await getSecretListApi({ type: ESecretType.GIT_BASIC_AUTH });
