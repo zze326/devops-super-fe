@@ -4,10 +4,10 @@ import { ref } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import AddFill from "@iconify-icons/ri/add-circle-line";
-import Delete from "@iconify-icons/ep/delete";
-import EditPen from "@iconify-icons/ep/edit-pen";
+import More from "@iconify-icons/ep/more";
 import Search from "@iconify-icons/ep/search";
 import Refresh from "@iconify-icons/ep/refresh";
+import ArrowDown from "@iconify-icons/ep/arrow-down";
 import Play from "@iconify-icons/ri/play-line";
 import Operation from "@iconify-icons/ep/operation";
 import { useLogic } from "./logic/logic";
@@ -28,10 +28,10 @@ const {
   openDialog,
   onSearch,
   resetForm,
-  handleDelete,
   handleArrange,
   handleRun,
   handleRowClick,
+  handleMoreCommand,
   store
 } = useLogic(tableRef);
 </script>
@@ -106,29 +106,46 @@ const {
         }"
       >
         <template #operation="{ row }">
-          <el-button
-            v-auth="Permiss.RUN"
-            class="reset-margin"
-            link
-            type="primary"
-            :size="size"
-            :icon="useRenderIcon(Play)"
-            @click="handleRun(row)"
-          >
-            运行
-          </el-button>
-          <el-button
-            v-auth="Permiss.ARRANGE"
-            class="reset-margin"
-            link
-            type="primary"
-            :size="size"
-            :icon="useRenderIcon(Operation)"
-            @click="handleArrange(row)"
-          >
-            编排
-          </el-button>
-          <el-button
+          <div class="flex flex-wrap items-center">
+            <el-button
+              v-auth="Permiss.RUN"
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon(Play)"
+              @click="handleRun(row)"
+            >
+              运行
+            </el-button>
+            <el-button
+              v-auth="Permiss.ARRANGE"
+              class="reset-margin"
+              link
+              type="primary"
+              :size="size"
+              :icon="useRenderIcon(Operation)"
+              @click="handleArrange(row)"
+            >
+              编排
+            </el-button>
+            <el-dropdown @command="handleMoreCommand($event, row)">
+              <span>
+                <component :is="useRenderIcon(More)" />
+                <el-text>更多</el-text>
+                <component :is="useRenderIcon(ArrowDown)" />
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="edit">编辑</el-dropdown-item>
+                  <el-dropdown-item command="clone">克隆</el-dropdown-item>
+                  <el-dropdown-item command="delete">删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+
+          <!-- <el-button
             v-auth="Permiss.UPT"
             class="reset-margin"
             link
@@ -156,7 +173,7 @@ const {
                 </el-button>
               </template>
             </el-popconfirm>
-          </Auth>
+          </Auth> -->
         </template>
       </pure-table>
     </template>
@@ -168,6 +185,23 @@ const {
 .search-form {
   :deep(.el-form-item) {
     margin-bottom: 12px;
+  }
+}
+
+.el-dropdown {
+  margin-left: 12px;
+
+  span {
+    display: flex;
+    align-items: center;
+    color: var(--el-color-primary);
+    cursor: pointer;
+  }
+
+  .el-text {
+    margin: 0 1px;
+    font-weight: var(--el-font-weight-primary);
+    color: var(--el-color-primary);
   }
 }
 </style>

@@ -123,3 +123,11 @@ export const runApi = (id: number, params = {}) =>
   http.request<Resp<null>>("post", `/ci-pipeline/${id}/run`, {
     data: { params }
   });
+
+/** 克隆流水线 */
+export const cloneApi = (id: number, newName: string) =>
+  http.request<Resp<null>>("post", `/ci-pipeline/${id}/clone`, {
+    data: {
+      newName
+    }
+  });

@@ -1,17 +1,20 @@
 import editForm from "../form.vue";
 import parameterizeForm from "../parameterize-form.vue";
+import cloneForm from "../clone-form.vue";
 import { addDialog } from "@/components/ReDialog";
 import { FormDataProps, Permiss } from "./types";
 import { initValues } from "./form";
 import { h, ref, onMounted, reactive } from "vue";
 import { TableInstance } from "element-plus";
+import { confirm } from "@/utils/generic";
 import { message } from "@/utils/message";
 import {
   addApi,
   uptApi,
   getPageLstApi,
   delApi,
-  runApi
+  runApi,
+  cloneApi
 } from "@/api/ci/ci-pipeline";
 import {
   getLstApi as getSecretListApi,
@@ -58,7 +61,7 @@ export const useLogic = tableRef => {
     {
       label: "操作",
       fixed: "right",
-      width: 265,
+      width: 210,
       slot: "operation",
       hide: !hasAuth(
         [Permiss.UPT, Permiss.DEL, Permiss.ARRANGE, Permiss.RUN],
@@ -149,6 +152,31 @@ export const useLogic = tableRef => {
     });
   };
 
+  const openCloneDialog = (row?: FormDataProps) => {
+    addDialog({
+      title: "克隆流水线",
+      props: {
+        formData: {}
+      },
+      width: "25%",
+      draggable: true,
+      closeOnClickModal: false,
+      contentRenderer: () => h(cloneForm, { ref: formRef }),
+      beforeSure: async (done, { options }) => {
+        const ok = await formRef.value.validate();
+        if (!ok) {
+          return;
+        }
+        const formData = options.props.formData;
+
+        await cloneApi(row.id, formData.name);
+        message("克隆成功", { type: "success" });
+        done();
+        onSearch();
+      }
+    });
+  };
+
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
@@ -195,6 +223,22 @@ export const useLogic = tableRef => {
     }
   };
 
+  const handleMoreCommand = async (command: string, row: FormDataProps) => {
+    switch (command) {
+      case "edit":
+        openDialog("编辑", row);
+        break;
+      case "clone":
+        openCloneDialog(row);
+        break;
+      case "delete":
+        if (await confirm(`确认删除名称为 ${row.name} 的流水线？`)) {
+          handleDelete(row);
+        }
+        break;
+    }
+  };
+
   onMounted(() => {
     onSearch();
   });
@@ -211,8 +255,8 @@ export const useLogic = tableRef => {
     handleDelete,
     handleArrange,
     handleRun,
-    // handleCurrentChange,
     handleRowClick,
+    handleMoreCommand,
     store
   };
 };

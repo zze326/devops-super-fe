@@ -22,7 +22,7 @@ export const initValues = (row?: FormDataProps): FormDataProps => {
     name: row?.name ?? "",
     kubernetesConfigId: row?.kubernetesConfigId,
     kubernetesNamespace: row?.kubernetesNamespace ?? "",
-    parameterize: row.parameterize ?? false,
+    parameterize: row?.parameterize ?? false,
     desc: row?.desc ?? ""
   };
 };
