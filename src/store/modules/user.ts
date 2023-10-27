@@ -38,9 +38,7 @@ export const useUserStore = defineStore({
     async loginByUsername(data) {
       const res = await getLogin(data);
       if (res.code === 0) {
-        removeToken();
         // router.push("/login");
-        resetRouter();
         setToken(res.data);
       }
       return res;
