@@ -46,17 +46,18 @@ export const useLogic = tableRef => {
     },
     {
       label: "名称",
-      prop: "name"
+      prop: "name",
+      minWidth: 100
     },
     {
       label: "描述",
-      minWidth: 200,
+      minWidth: 100,
       prop: "desc"
     },
     {
       label: "更新时间",
       prop: "updatedAt",
-      width: "160"
+      width: 160
     },
     {
       label: "操作",

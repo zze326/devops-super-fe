@@ -93,7 +93,7 @@ export const useLogic = () => {
       align: "center",
       width: 138,
       slot: "operation",
-      hide: !hasAuth([Permiss.LOG], true)
+      hide: !hasAuth([Permiss.LOG, Permiss.CANCEL], true)
     }
   ];
 

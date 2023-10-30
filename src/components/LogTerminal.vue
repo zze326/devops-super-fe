@@ -40,6 +40,7 @@ const term = new Terminal({
 });
 const _radius_em = props.inBody ? 0 : 0.3;
 
+let pingInterval = null;
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 term.loadAddon(new WebLinksAddon());
@@ -67,8 +68,12 @@ const init = () => {
   });
   terminalWs.onopen = () => {
     resizeTerminal();
+    pingInterval = setInterval(() => {
+      terminalWs.send("ping");
+    }, 10000);
   };
   terminalWs.onclose = () => {
+    clearInterval(pingInterval);
     term.write("\x1b[31m" + "连接已断开" + "\x1b[0m");
     resizeTerminal();
   };
@@ -82,6 +87,7 @@ const init = () => {
 };
 onMounted(init);
 onUnmounted(() => {
+  clearInterval(pingInterval);
   terminalWs.close();
 });
 </script>
