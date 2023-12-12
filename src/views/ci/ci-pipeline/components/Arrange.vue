@@ -481,9 +481,9 @@ function getRequestData() {
     config: state.envTabs.map(envTab => {
       return {
         id: envTab.id,
-        stages: envTab.stages.map(stageTab =>
-          _.pick(stageTab, ["name", "tasks"])
-        ),
+        stages: envTab.isKaniko
+          ? []
+          : envTab.stages.map(stageTab => _.pick(stageTab, ["name", "tasks"])),
         params: envTab.params // 容器运行参数
       };
     }),
@@ -557,7 +557,7 @@ async function init() {
       const envInfo = res2.data.envMap[envItem.id];
       envItem.name = envInfo.name;
       envItem.isKaniko = envInfo.isKaniko;
-      envItem.stages.forEach(stageItem => {
+      envItem.stages?.forEach(stageItem => {
         if (!stageItem.tasks) {
           stageItem.tasks = [newEmptyTask()];
         }
