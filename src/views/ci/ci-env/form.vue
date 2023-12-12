@@ -25,7 +25,10 @@ const appInstance = getCurrentInstance();
 const formRef = ref();
 const formData = ref(props.formData);
 
-if (formData.value.persistenceConfig) {
+if (
+  formData.value.persistenceConfig &&
+  formData.value.persistenceConfig.length > 0
+) {
   state.persistenceEnabled = true;
 }
 
@@ -63,10 +66,12 @@ const handlePersistenceConfigItemRemove = (idx: number) => {
 const validateAllForms = async () => {
   const validatePromiseArr = [formRef.value.validate().catch(_ => false)];
 
-  for (const formRef of appInstance?.refs[
-    "persistenceFormRef"
-  ] as Array<FormInstance>) {
-    validatePromiseArr.push(formRef.validate().catch(_ => false));
+  if (appInstance?.refs["persistenceFormRef"]) {
+    for (const formRef of appInstance?.refs[
+      "persistenceFormRef"
+    ] as Array<FormInstance>) {
+      validatePromiseArr.push(formRef.validate().catch(_ => false));
+    }
   }
 
   return (await Promise.all(validatePromiseArr)).every(item => item === true);
@@ -115,13 +120,7 @@ defineExpose({ validateAllForms });
           </el-space>
         </re-col>
 
-        <el-col :xs="24" :sm="24">
-          <el-alert type="info" show-icon :closable="false">
-            <p>
-              开启持久化则表示要挂载 PVC
-              到指定目录以保存构建环境运行期间产生的数据。
-            </p>
-          </el-alert>
+        <el-col :span="12">
           <ElFormItem label="持久化">
             <el-switch
               inline-prompt
@@ -131,6 +130,25 @@ defineExpose({ validateAllForms });
               v-model="state.persistenceEnabled"
             />
           </ElFormItem>
+          <el-alert type="info" show-icon :closable="false">
+            <p>
+              开启持久化则表示要挂载 PVC
+              到指定目录以保存构建环境运行期间产生的数据。
+            </p>
+          </el-alert>
+        </el-col>
+        <el-col :span="12">
+          <ElFormItem label="Kaniko 环境" prop="isKaniko">
+            <el-switch
+              inline-prompt
+              active-text="是"
+              inactive-text="否"
+              v-model="formData.isKaniko"
+            />
+          </ElFormItem>
+          <el-alert type="info" show-icon :closable="false">
+            <p>如果该环境使用的是 Kaniko 镜像则需启用此选项。</p>
+          </el-alert>
         </el-col>
       </el-row>
     </el-form>

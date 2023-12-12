@@ -75,6 +75,7 @@ export type Config = ConfigEnvItem[];
 export type ConfigEnvItem = {
   id: number;
   name?: string;
+  isKaniko: boolean;
   stages: ConfigEnvStageItem[];
 };
 

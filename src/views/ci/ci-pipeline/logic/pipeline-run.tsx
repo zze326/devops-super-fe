@@ -34,7 +34,8 @@ export const useLogic = () => {
     total: 0,
     pageSize: 15,
     currentPage: 1,
-    background: true
+    background: true,
+    layout: "total, sizes, pager, jumper"
   });
 
   const columns: TableColumnList = [

@@ -5,6 +5,7 @@ export type Model = {
   name: string;
   image: string;
   secretName: string;
+  isKaniko: boolean;
   persistenceConfig: PersistenceConfig;
 };
 export type PersistenceConfig = PersistenceConfigItem[];

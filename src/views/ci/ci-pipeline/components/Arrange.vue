@@ -16,7 +16,11 @@
           <el-divider content-position="center">
             参数 {{ paramIdx + 1 }}
           </el-divider>
-          <ParamForm ref="paramFormRef" :data="param" />
+          <ParamForm
+            ref="paramFormRef"
+            :data="param"
+            :git-basic-auth-secrets="state.gitBasicSecertList"
+          />
           <p style="text-align: center">
             <el-button
               :icon="useRenderIcon(Plus)"
@@ -50,7 +54,23 @@
             :key="envTab.sort"
             :label="`环境${envTab.sort}.${envTab.name}`"
           >
+            <div v-if="envTab.isKaniko">
+              <ElForm ref="formRef" :model="envTab" label-width="80px">
+                <ElFormItem label="运行参数" prop="params">
+                  <el-input
+                    show-word-limit
+                    maxlength="1000"
+                    v-model="envTab.params"
+                    :autosize="{ minRows: 4, maxRows: 8 }"
+                    clearable
+                    type="textarea"
+                    placeholder="请输入运行参数，例： --dockerfile=/devops-super/Dockerfile --context=dir://devops-super --destination=docker.io/zze326/devops-super:latest"
+                  />
+                </ElFormItem>
+              </ElForm>
+            </div>
             <el-tabs
+              v-else
               v-model="envTab.currentStageSort"
               editable
               tab-position="left"
@@ -94,7 +114,11 @@
                   <el-divider content-position="center">
                     任务 {{ taskIdx + 1 }}
                   </el-divider>
-                  <TaskForm ref="taskFormRef" :data="task" />
+                  <TaskForm
+                    ref="taskFormRef"
+                    :data="task"
+                    :git-basic-auth-secrets="state.gitBasicSecertList"
+                  />
                   <p style="text-align: center">
                     <el-button
                       :icon="useRenderIcon(Plus)"
@@ -166,6 +190,11 @@ import { useStore } from "../logic/store";
 import { reactive, onMounted, watch, computed, getCurrentInstance } from "vue";
 import { Model as EnvModel } from "@/api/ci/ci-env";
 import { uptConfigApi, getConfigApi, Task, Param } from "@/api/ci/ci-pipeline";
+import {
+  ESecretType,
+  getLstApi as getSecretLstApi,
+  Model as SecretModel
+} from "@/api/resource/secret";
 import EnvSelect from "./EnvSelect.vue";
 import TaskForm from "./TaskForm.vue";
 import ParamForm from "./ParamForm.vue";
@@ -187,6 +216,8 @@ type EnvTab = Partial<{
   id: number;
   name: string;
   sort: number;
+  params: string;
+  isKaniko: boolean;
   stages: StageTab[];
   currentStageSort: number;
 }>;
@@ -200,11 +231,13 @@ const state = reactive<{
   currentEnvSort: number;
   changePoint: string;
   params: Param[];
+  gitBasicSecertList: Partial<SecretModel>[];
 }>({
   envTabs: [],
   currentEnvSort: 0,
   changePoint: "",
-  params: cloneDeep(store.arrangeCurrent.params) || []
+  params: cloneDeep(store.arrangeCurrent.params) || [],
+  gitBasicSecertList: []
 });
 
 const appInstance = getCurrentInstance();
@@ -439,7 +472,7 @@ const handleSave = async () => {
   await uptConfigApi(store.id, reqData);
   setChangePoint();
   store.arrangeCurrent.params = state.params;
-  message(`保存成功`, { type: "success" });
+  message("保存成功", { type: "success" });
 };
 
 // 将当前页面数据整理成请求格式数据
@@ -450,7 +483,8 @@ function getRequestData() {
         id: envTab.id,
         stages: envTab.stages.map(stageTab =>
           _.pick(stageTab, ["name", "tasks"])
-        )
+        ),
+        params: envTab.params // 容器运行参数
       };
     }),
     params: state.params
@@ -512,17 +546,24 @@ const handleParamRemove = (idx: number) => {
 
 // 初始化页面数据
 async function init() {
-  const res = await getConfigApi(store.id);
-  if (res.data.config && res.data.config.length > 0) {
-    res.data.config.forEach(envItem => {
-      envItem.name = res.data.envMap[envItem.id];
+  const [res1, res2] = await Promise.all([
+    getSecretLstApi({ type: ESecretType.GIT_BASIC_AUTH }),
+    getConfigApi(store.id)
+  ]);
+
+  state.gitBasicSecertList = res1.data.list;
+  if (res2.data.config && res2.data.config.length > 0) {
+    res2.data.config.forEach(envItem => {
+      const envInfo = res2.data.envMap[envItem.id];
+      envItem.name = envInfo.name;
+      envItem.isKaniko = envInfo.isKaniko;
       envItem.stages.forEach(stageItem => {
         if (!stageItem.tasks) {
           stageItem.tasks = [newEmptyTask()];
         }
       });
     });
-    state.envTabs = res.data.config as EnvTab[];
+    state.envTabs = res2.data.config as EnvTab[];
     state.currentEnvSort = state.envTabs.length;
     currentEnvTab.value.currentStageSort = currentEnvTab.value.stages.length;
   }

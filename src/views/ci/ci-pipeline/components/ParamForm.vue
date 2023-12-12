@@ -80,29 +80,22 @@
 
 <script setup lang="ts">
 import { EParamType, Param, EParamTypeModel } from "@/api/ci/ci-pipeline";
-import {
-  getLstApi as getSecretListApi,
-  Model as SecretModel,
-  ESecretType
-} from "@/api/resource/secret";
+import { Model as SecretModel } from "@/api/resource/secret";
 import { getGitBranchLstApi } from "@/api/common/common";
-import { ref, onMounted, reactive } from "vue";
+import { ref } from "vue";
 
 import _ from "lodash";
 import { FormInstance } from "element-plus";
-import { toRefs } from "vue";
 const props = defineProps({
   data: {
     type: Object as PropType<Param>,
     required: true
+  },
+  gitBasicAuthSecrets: {
+    type: Array as PropType<Partial<SecretModel>[]>,
+    required: true
   }
 });
-
-const state = reactive<{ gitBasicAuthSecrets: Partial<SecretModel>[] }>({
-  gitBasicAuthSecrets: []
-});
-
-const { gitBasicAuthSecrets } = toRefs(state);
 
 const formRef = ref<FormInstance>();
 
@@ -161,11 +154,4 @@ const getRules = (data: Param) => {
       return globalRules;
   }
 };
-
-const init = async () => {
-  const res = await getSecretListApi({ type: ESecretType.GIT_BASIC_AUTH });
-  state.gitBasicAuthSecrets = res.data.list;
-};
-
-onMounted(init);
 </script>

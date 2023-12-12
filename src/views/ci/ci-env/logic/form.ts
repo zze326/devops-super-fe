@@ -5,6 +5,9 @@ import { FormDataProps } from "./types";
 /** 自定义表单规则校验 */
 export const rules = reactive(<FormRules>{
   name: [{ required: true, message: "名称为必填项", trigger: "blur" }],
+  client: [
+    { required: true, message: "是否是客户端为必选项", trigger: "blur" }
+  ],
   image: [
     { required: true, message: "镜像地址为必填项", trigger: "blur" },
     {
@@ -54,6 +57,7 @@ export const initValues = (row?: FormDataProps): FormDataProps => {
     name: row?.name ?? "",
     image: row?.image ?? "",
     secretName: row?.secretName ?? "",
+    isKaniko: row?.isKaniko ?? false,
     persistenceConfig: row?.persistenceConfig
   };
 };

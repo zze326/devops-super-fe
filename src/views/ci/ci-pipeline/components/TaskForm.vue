@@ -106,31 +106,24 @@ import {
   ShellExecData,
   ETaskTypeModel
 } from "@/api/ci/ci-pipeline";
-import {
-  getLstApi as getSecretListApi,
-  Model as SecretModel,
-  ESecretType
-} from "@/api/resource/secret";
-import { computed, ref, onMounted, reactive } from "vue";
+import { Model as SecretModel } from "@/api/resource/secret";
+import { computed, ref } from "vue";
 
 import _ from "lodash";
 import { FormInstance } from "element-plus";
-import { toRefs } from "vue";
 const props = defineProps({
   data: {
     type: Object as PropType<Task>,
+    required: true
+  },
+  gitBasicAuthSecrets: {
+    type: Array as PropType<Partial<SecretModel>[]>,
     required: true
   }
 });
 
 if (!props.data.gitPullData) props.data.gitPullData = {};
 if (!props.data.shellExecData) props.data.shellExecData = {};
-
-const state = reactive<{ gitBasicAuthSecrets: Partial<SecretModel>[] }>({
-  gitBasicAuthSecrets: []
-});
-
-const { gitBasicAuthSecrets } = toRefs(state);
 
 const formRef = ref<FormInstance>();
 const gitPullFormRef = ref<FormInstance>();
@@ -189,11 +182,4 @@ const rules = computed(() => {
       return globalRules;
   }
 });
-
-const init = async () => {
-  const res = await getSecretListApi({ type: ESecretType.GIT_BASIC_AUTH });
-  state.gitBasicAuthSecrets = res.data.list;
-};
-
-onMounted(init);
 </script>
