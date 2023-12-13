@@ -1,55 +1,33 @@
 import { reactive } from "vue";
 import type { FormRules } from "element-plus";
 import { FormDataProps } from "./types";
+import {
+  imageUrlRule,
+  relativePathFileRule,
+  absolutePathRule,
+  requiredRule,
+  noChineseIgnoreMidLineRule,
+  resourceNameRule
+} from "@/utils/formRules";
 
 /** 自定义表单规则校验 */
 export const rules = reactive(<FormRules>{
-  name: [{ required: true, message: "名称为必填项", trigger: "blur" }],
-  client: [
-    { required: true, message: "是否是客户端为必选项", trigger: "blur" }
-  ],
-  image: [
-    { required: true, message: "镜像地址为必填项", trigger: "blur" },
-    {
-      pattern:
-        /^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*(?:\/[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*)*(:[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*)?$/,
-      message: "请输入合法镜像地址",
-      trigger: "blur"
-    }
-  ],
-  secretName: [
-    {
-      pattern: /^[a-z]([-a-z0-9]*[a-z0-9])?$/g,
-      message: "请输入合法的 Kubernetes Secret 名称",
-      trigger: "blur"
-    }
-  ]
+  name: [requiredRule("名称为必填项")],
+  client: [requiredRule("是否是客户端为必选项")],
+  image: [requiredRule("镜像地址为必填项"), imageUrlRule()],
+  secretName: [resourceNameRule("Kubernetes Secret 名称格式不正确")]
 });
 
 export const persistenceFormRules = reactive<FormRules>({
   pvcName: [
-    { required: true, message: "PVC 名称为必填项", trigger: "blur" },
-    {
-      pattern: /^[A-Za-z0-9-]+$/,
-      message: "PVC 名称不能包含中文，且不能包含特殊字符（-除外）",
-      trigger: "blur"
-    }
+    requiredRule("PVC 名称为必填项"),
+    noChineseIgnoreMidLineRule("PVC 名称不能包含中文和特殊字符（-除外）")
   ],
   mountPath: [
-    { required: true, message: "挂载路径为必填项", trigger: "blur" },
-    {
-      pattern: /^\/(?:[^/]+\/)*[^/]+$/,
-      message: "挂载路径必须是绝对路径",
-      trigger: "blur"
-    }
+    requiredRule("挂载路径为必填项"),
+    absolutePathRule("挂载路径必须是绝对路径")
   ],
-  subPath: [
-    {
-      pattern: /^(?!\/)(?:[^/]+\/)*[^/]+$/,
-      message: "挂载子路径必须是相对路径",
-      trigger: "blur"
-    }
-  ]
+  subPath: [relativePathFileRule("挂载子路径必须是相对路径")]
 });
 
 export const initValues = (row?: FormDataProps): FormDataProps => {

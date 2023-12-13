@@ -82,6 +82,7 @@
 import { EParamType, Param, EParamTypeModel } from "@/api/ci/ci-pipeline";
 import { Model as SecretModel } from "@/api/resource/secret";
 import { getGitBranchLstApi } from "@/api/common/common";
+import { requiredRule, gitUrlRule } from "@/utils/formRules";
 import { ref } from "vue";
 
 import _ from "lodash";
@@ -116,22 +117,13 @@ defineExpose({
 
 const getRules = (data: Param) => {
   const globalRules = {
-    type: [{ required: true, message: "参数类型为必选项", trigger: "blur" }],
-    name: [{ required: true, message: "参数名称为必填项", trigger: "blur" }],
-    display: [
-      { required: true, message: "参数显示文本为必填项", trigger: "blur" }
-    ]
+    type: [requiredRule("参数类型为必选项")],
+    name: [requiredRule("参数名称为必填项")],
+    display: [requiredRule("参数显示文本为必填项")]
   };
 
   const gitBranchRules = {
-    gitUrl: [
-      { required: true, message: "git url 为必填项", trigger: "blur" },
-      {
-        pattern: /^(git|https?|ssh):\/\/[^\s]+$/i,
-        message: "请输入合法的 Git URL",
-        trigger: "blur"
-      }
-    ],
+    gitUrl: [requiredRule("git url 为必填项"), gitUrlRule()],
     secretId: [
       {
         validator: async (_rule, _value, _callback) => {

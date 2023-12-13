@@ -61,6 +61,7 @@ import { ref, onMounted, reactive } from "vue";
 
 import _ from "lodash";
 import { FormInstance } from "element-plus";
+import { requiredRule } from "@/utils/formRules";
 const props = defineProps({
   baseData: {
     type: Object as PropType<Param[]>,
@@ -77,15 +78,13 @@ const rules = genRules(props.baseData);
 function genRules(baseData: Param[]) {
   const rules = {};
   baseData.forEach(baseItem => {
-    const rule = {
-      required: true,
-      message: `${baseItem.display}为必${
+    const rule = requiredRule(
+      `${baseItem.display}为必${
         [EParamType.ENUM_LIST, EParamType.GIT_BRANCH].includes(baseItem.type)
           ? "选"
           : "填"
-      }项`,
-      trigger: "blur"
-    };
+      }项`
+    );
     rules[baseItem.name] = rule;
   });
   return rules;

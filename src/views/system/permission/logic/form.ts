@@ -2,6 +2,10 @@ import { reactive } from "vue";
 import type { FormRules } from "element-plus";
 import { FormItemProps, ETypeModel, EType } from "./types";
 import { type OptionsType } from "@/components/ReSegmented";
+import {
+  noChineseIgnoreMidLineAndBottomLineRule,
+  requiredRule
+} from "@/utils/formRules";
 
 export const dynamicRules = (
   formData: FormItemProps,
@@ -13,15 +17,13 @@ export const dynamicRules = (
   }
 
   const rules = <FormRules>{
-    title: [{ required: true, message: "权限标题为必填项", trigger: "blur" }],
-    type: [{ required: true, message: "权限类型为必填项", trigger: "blur" }],
+    title: [requiredRule("权限标题为必填项")],
+    type: [requiredRule("权限类型为必填项")],
     name: [
-      { required: true, message: "权限名称为必填项", trigger: "blur" },
-      {
-        pattern: /^[A-Za-z0-9\-_]+$/,
-        message: "权限名称不能包含中文，且不能包含特殊字符（-、_除外）",
-        trigger: "blur"
-      }
+      requiredRule("权限名称为必填项"),
+      noChineseIgnoreMidLineAndBottomLineRule(
+        "权限名称不能包含中文和特殊字符（-、_除外）"
+      )
     ],
     bRoutes: [
       {
@@ -38,22 +40,16 @@ export const dynamicRules = (
         trigger: "change"
       }
     ],
-    rank: [{ required: true, message: "排序为必填项", trigger: "blur" }]
+    rank: [requiredRule("排序为必填项")]
   };
 
   switch (formData.type) {
     case EType.DIR:
       Object.assign(rules, {
-        fRoute: [
-          { required: true, message: "前端路由为必填项", trigger: "blur" }
-        ],
-        redirect: [
-          { required: true, message: "重定向路径为必填项", trigger: "blur" }
-        ],
-        icon: [{ required: true, message: "图标为必填项", trigger: "blur" }],
-        showLink: [
-          { required: true, message: "显示在菜单为必填项", trigger: "blur" }
-        ],
+        fRoute: [requiredRule("前端路由为必填项")],
+        redirect: [requiredRule("重定向路径为必填项")],
+        icon: [requiredRule("图标为必填项")],
+        showLink: [requiredRule("显示在菜单为必填项")],
         parentId: [
           {
             validator: (rule, value, callback) => {
@@ -70,22 +66,10 @@ export const dynamicRules = (
       break;
     case EType.MENU:
       Object.assign(rules, {
-        fRoute: [
-          { required: true, message: "前端路由为必填项", trigger: "blur" }
-        ],
-        showLink: [
-          { required: true, message: "显示在菜单为必填项", trigger: "blur" }
-        ],
-        showParent: [
-          { required: true, message: "显示父菜单为必填项", trigger: "blur" }
-        ],
-        keepAlive: [
-          {
-            required: true,
-            message: "是否开启页面缓存为必填项",
-            trigger: "blur"
-          }
-        ],
+        fRoute: [requiredRule("前端路由为必填项")],
+        showLink: [requiredRule("显示在菜单为必填项")],
+        showParent: [requiredRule("显示父菜单为必填项")],
+        keepAlive: [requiredRule("是否开启页面缓存为必填项")],
         parentId: [
           {
             validator: (rule, value, callback) => {
@@ -103,7 +87,7 @@ export const dynamicRules = (
     case EType.ABLE:
       Object.assign(rules, {
         parentId: [
-          { required: true, message: "上级权限为必填项", trigger: "blur" },
+          requiredRule("上级权限为必填项"),
           {
             validator: (rule, value, callback) => {
               if (parent && parent.type !== EType.MENU) {

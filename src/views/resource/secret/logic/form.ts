@@ -3,11 +3,12 @@ import type { FormRules } from "element-plus";
 import { FormDataProps } from "./types";
 import { ESecretType } from "@/api/resource/secret";
 import { testConnectApi } from "@/api/common/kubernetes";
+import { requiredRule } from "@/utils/formRules";
 
 /** 自定义表单规则校验 */
 export const rules = reactive(<FormRules>{
-  name: [{ required: true, message: "名称为必填项", trigger: "blur" }],
-  type: [{ required: true, message: "类型为必选项", trigger: "blur" }]
+  name: [requiredRule("名称为必填项")],
+  type: [requiredRule("类型为必选项")]
 });
 
 export const kubernetesConfigRules = reactive(<FormRules>{
@@ -29,8 +30,8 @@ export const kubernetesConfigRules = reactive(<FormRules>{
 });
 
 export const usernamePasswordRules = reactive(<FormRules>{
-  username: [{ required: true, message: "用户名为必填项", trigger: "blur" }],
-  password: [{ required: true, message: "密码必填项", trigger: "blur" }]
+  username: [requiredRule("用户名为必填项")],
+  password: [requiredRule("密码必填项")]
 });
 
 export const dynamicContentRules = (formData: FormDataProps) => {

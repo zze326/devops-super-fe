@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+import { requiredRule } from "@/utils/formRules";
 import { FormInstance } from "element-plus";
 import { ref } from "vue";
 
@@ -24,13 +25,7 @@ defineProps({
 });
 
 const rules = {
-  name: [
-    {
-      required: true,
-      message: "流水线名称为必填项",
-      trigger: "blur"
-    }
-  ]
+  name: [requiredRule("流水线名称为必填项")]
 };
 
 const formRef = ref<FormInstance>();

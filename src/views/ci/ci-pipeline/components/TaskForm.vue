@@ -111,6 +111,7 @@ import { computed, ref } from "vue";
 
 import _ from "lodash";
 import { FormInstance } from "element-plus";
+import { gitUrlRule, requiredRule } from "@/utils/formRules";
 const props = defineProps({
   data: {
     type: Object as PropType<Task>,
@@ -148,25 +149,16 @@ defineExpose({
 
 const rules = computed(() => {
   const globalRules = {
-    type: [{ required: true, message: "任务类型为必选项", trigger: "blur" }]
+    type: [requiredRule("任务类型为必选项")]
   };
 
   const gitPullRules = {
-    gitUrl: [
-      { required: true, message: "git url 为必填项", trigger: "blur" },
-      {
-        pattern: /^(git|https?|ssh):\/\/[^\s]+$/i,
-        message: "请输入合法的 Git URL",
-        trigger: "blur"
-      }
-    ],
+    gitUrl: [requiredRule("git url 为必填项"), gitUrlRule()],
     branch: [{ required: true, message: "git 分支为必填项", trigger: "blur" }]
   };
 
   const shellExecRules = {
-    content: [
-      { required: true, message: "shell 内容为必填项", trigger: "blur" }
-    ]
+    content: [requiredRule("shell 内容为必填项")]
   };
 
   if (!props.data) {

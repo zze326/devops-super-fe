@@ -55,16 +55,37 @@
             :label="`环境${envTab.sort}.${envTab.name}`"
           >
             <div v-if="envTab.isKaniko">
-              <ElForm ref="formRef" :model="envTab" label-width="80px">
-                <ElFormItem label="运行参数" prop="params">
+              <ElForm
+                ref="formRef"
+                :model="envTab.kanikoParam"
+                label-width="130px"
+                :rules="kanikoFormRules"
+              >
+                <ElFormItem label="上下文目录" prop="contextDir">
                   <el-input
                     show-word-limit
-                    maxlength="1000"
-                    v-model="envTab.params"
-                    :autosize="{ minRows: 4, maxRows: 8 }"
+                    maxlength="300"
+                    v-model="envTab.kanikoParam.contextDir"
                     clearable
-                    type="textarea"
-                    placeholder="请输入运行参数，例： --dockerfile=/devops-super/Dockerfile --context=dir://devops-super --destination=docker.io/zze326/devops-super:latest"
+                    placeholder="上下文目录，相对路径，例： devops-super/docker-build"
+                  />
+                </ElFormItem>
+                <ElFormItem label="Dockerfile 路径" prop="dockerfilePath">
+                  <el-input
+                    show-word-limit
+                    maxlength="300"
+                    v-model="envTab.kanikoParam.dockerfilePath"
+                    clearable
+                    placeholder="Dockerfile 路径，相对路径，例：devops-super/Dockerfile"
+                  />
+                </ElFormItem>
+                <ElFormItem label="镜像推送地址" prop="imageDestination">
+                  <el-input
+                    show-word-limit
+                    maxlength="300"
+                    v-model="envTab.kanikoParam.imageDestination"
+                    clearable
+                    placeholder="镜像推送地址，例：registry.zze.xyz/online/devops-super:tmp"
                   />
                 </ElFormItem>
               </ElForm>
@@ -189,12 +210,24 @@
 import { useStore } from "../logic/store";
 import { reactive, onMounted, watch, computed, getCurrentInstance } from "vue";
 import { Model as EnvModel } from "@/api/ci/ci-env";
-import { uptConfigApi, getConfigApi, Task, Param } from "@/api/ci/ci-pipeline";
+import {
+  uptConfigApi,
+  getConfigApi,
+  Task,
+  Param,
+  KanikoParam
+} from "@/api/ci/ci-pipeline";
 import {
   ESecretType,
   getLstApi as getSecretLstApi,
   Model as SecretModel
 } from "@/api/resource/secret";
+import {
+  imageUrlRule,
+  relativePathFileRule,
+  relativePathRule,
+  requiredRule
+} from "@/utils/formRules";
 import EnvSelect from "./EnvSelect.vue";
 import TaskForm from "./TaskForm.vue";
 import ParamForm from "./ParamForm.vue";
@@ -216,7 +249,7 @@ type EnvTab = Partial<{
   id: number;
   name: string;
   sort: number;
-  params: string;
+  kanikoParam?: KanikoParam;
   isKaniko: boolean;
   stages: StageTab[];
   currentStageSort: number;
@@ -241,6 +274,18 @@ const state = reactive<{
 });
 
 const appInstance = getCurrentInstance();
+
+const kanikoFormRules = {
+  contextDir: [
+    requiredRule("上下文目录为必填项"),
+    relativePathRule("上下文目录路径必须是相对路径")
+  ],
+  dockerfilePath: [
+    requiredRule("Dockerfile 路径为必填项"),
+    relativePathFileRule("Dockerfile 路径必须是相对路径")
+  ],
+  imageDestination: [requiredRule("镜像推送地址为必填项"), imageUrlRule()]
+};
 
 // 添加环境 - 打开环境选择框
 function handleEnvTabsAdd() {
@@ -484,7 +529,7 @@ function getRequestData() {
         stages: envTab.isKaniko
           ? []
           : envTab.stages.map(stageTab => _.pick(stageTab, ["name", "tasks"])),
-        params: envTab.params // 容器运行参数
+        kanikoParam: envTab.kanikoParam // kaniko 构建参数
       };
     }),
     params: state.params
@@ -562,6 +607,13 @@ async function init() {
           stageItem.tasks = [newEmptyTask()];
         }
       });
+      if (envItem.isKaniko && !envItem.kanikoParam) {
+        envItem.kanikoParam = {
+          contextDir: "",
+          dockerfilePath: "",
+          imageDestination: ""
+        };
+      }
     });
     state.envTabs = res2.data.config as EnvTab[];
     state.currentEnvSort = state.envTabs.length;

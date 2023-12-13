@@ -1,10 +1,11 @@
 import { reactive } from "vue";
 import type { FormRules } from "element-plus";
 import { FormItemProps } from "./types";
+import { requiredRule } from "@/utils/formRules";
 
 export const rules = reactive(<FormRules>{
-  name: [{ required: true, message: "主机组标题为必填项", trigger: "blur" }],
-  rank: [{ required: true, message: "排序为必填项", trigger: "blur" }]
+  name: [requiredRule("主机组标题为必填项")],
+  rank: [requiredRule("排序为必填项")]
 });
 
 export const initValues = (row?: FormItemProps): FormItemProps => {

@@ -76,12 +76,20 @@ export type ConfigEnvItem = {
   id: number;
   name?: string;
   isKaniko: boolean;
+  kanikoParam: KanikoParam;
   stages: ConfigEnvStageItem[];
 };
 
 export type ConfigEnvStageItem = {
   name: string;
   tasks: Task[];
+};
+
+// kaniko 参数类型
+export type KanikoParam = {
+  contextDir: string;
+  dockerfilePath: string;
+  imageDestination: string;
 };
 
 /** 新增流水线 */
