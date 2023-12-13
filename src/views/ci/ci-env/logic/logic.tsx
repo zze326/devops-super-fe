@@ -70,7 +70,7 @@ export const useLogic = () => {
       props: {
         formData: initValues(row)
       },
-      width: "36%",
+      width: "45%",
       draggable: true,
       closeOnClickModal: false,
       contentRenderer: () => h(editForm, { ref: formRef }),

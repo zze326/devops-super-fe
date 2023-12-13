@@ -97,6 +97,7 @@ declare global {
     CachingAsyncRoutes?: boolean;
     TooltipEffect?: Effect;
     ResponsiveStorageNameSpace?: string;
+    CiEnvKanikoExecutorImage?: string;
   }
 
   /**

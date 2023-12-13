@@ -38,8 +38,8 @@ export const useLogic = () => {
     const ws = new WebSocket(wsUrl);
     ws.onopen = () => {
       onSearch();
-      if (state.pageLstInterval) clearInterval(state.pageLstInterval);
-      state.pageLstInterval = setInterval(onSearch, 5000);
+      if (!state.pageLstInterval)
+        state.pageLstInterval = setInterval(onSearch, 5000);
     };
     ws.onclose = () => {
       console.log("连接已断开");
@@ -163,7 +163,7 @@ export const useLogic = () => {
       wheres
     };
     if (ws.readyState === 3) {
-      message("Websocket 连接已断开，正在重新连接...", { type: "error" });
+      message("Websocket 连接已断开，正在尝试重新连接...", { type: "warning" });
       ws = newWs();
     } else if (ws.readyState === 1) {
       ws.send(JSON.stringify(reqData));

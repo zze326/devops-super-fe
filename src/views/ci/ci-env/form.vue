@@ -8,6 +8,7 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import Plus from "@iconify-icons/ep/plus";
 import Minus from "@iconify-icons/ep/minus";
 import { FormInstance } from "element-plus";
+import { getConfig } from "@/config";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formData: () => initValues()
@@ -16,9 +17,11 @@ const props = withDefaults(defineProps<FormProps>(), {
 const state = reactive<{
   persistenceEnabled: boolean;
   persistenceConfigOld: PersistenceConfig;
+  lastImage: string;
 }>({
   persistenceEnabled: false,
-  persistenceConfigOld: []
+  persistenceConfigOld: [],
+  lastImage: ""
 });
 
 const appInstance = getCurrentInstance();
@@ -62,6 +65,15 @@ const handlePersistenceConfigItemRemove = (idx: number) => {
   formData.value.persistenceConfig.splice(idx, 1);
 };
 
+const handleIsKanikoChange = (iskaniko: boolean) => {
+  if (iskaniko) {
+    state.lastImage = formData.value.image;
+    formData.value.image = getConfig()?.CiEnvKanikoExecutorImage;
+  } else {
+    formData.value.image = state.lastImage;
+  }
+};
+
 // 校验所有的表单
 const validateAllForms = async () => {
   const validatePromiseArr = [formRef.value.validate().catch(_ => false)];
@@ -101,6 +113,7 @@ defineExpose({ validateAllForms });
             <el-input
               v-model="formData.image"
               type="text"
+              :disabled="formData.isKaniko"
               show-word-limit
               maxlength="300"
             />
@@ -143,11 +156,15 @@ defineExpose({ validateAllForms });
               inline-prompt
               active-text="是"
               inactive-text="否"
+              @change="handleIsKanikoChange"
               v-model="formData.isKaniko"
             />
           </ElFormItem>
           <el-alert type="info" show-icon :closable="false">
-            <p>如果该环境使用的是 Kaniko 镜像则需启用此选项。</p>
+            <p>
+              如果该环境使用的是 Kaniko
+              镜像则需启用此选项，默认使用本系统测试通过的镜像（镜像来源：gcriokaniko/executor）。
+            </p>
           </el-alert>
         </el-col>
       </el-row>
