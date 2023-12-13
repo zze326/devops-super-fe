@@ -1,5 +1,5 @@
 import { Permiss } from "./types";
-import { watch, ref, onMounted, reactive, h, onUnmounted } from "vue";
+import { watch, ref, reactive, h, onUnmounted } from "vue";
 import { PaginationProps } from "@pureadmin/table";
 import { hasAuth } from "@/router/utils";
 import { useStore } from "./store";
@@ -32,7 +32,26 @@ export const useLogic = () => {
     getWsProtocol()
   )}/ci-pipeline-run/page-list?token=${tokenInfo.token}`;
 
-  const ws = new WebSocket(wsUrl);
+  let ws = newWs();
+
+  function newWs() {
+    const ws = new WebSocket(wsUrl);
+    ws.onopen = () => {
+      onSearch();
+      if (state.pageLstInterval) clearInterval(state.pageLstInterval);
+      state.pageLstInterval = setInterval(onSearch, 5000);
+    };
+    ws.onclose = () => {
+      console.log("连接已断开");
+    };
+    ws.onmessage = e => {
+      const data = JSON.parse(e.data);
+      dataList.value = data.list;
+      pagination.total = data.total;
+      loading.value = false;
+    };
+    return ws;
+  }
 
   const pagination = reactive<PaginationProps>({
     total: 0,
@@ -143,29 +162,21 @@ export const useLogic = () => {
       pageSize: pagination.pageSize,
       wheres
     };
-    ws.send(JSON.stringify(reqData));
+    if (ws.readyState === 3) {
+      message("Websocket 连接已断开，正在重新连接...", { type: "error" });
+      ws = newWs();
+    } else if (ws.readyState === 1) {
+      ws.send(JSON.stringify(reqData));
+    }
   };
 
   watch(() => store.current, onSearch);
   watch(() => store.historyCounter, onSearch);
 
-  onMounted(() => {
-    ws.onopen = () => {
-      onSearch();
-      state.pageLstInterval = setInterval(onSearch, 5000);
-    };
-    ws.onclose = () => {
-      console.log("连接已断开");
-    };
-    ws.onmessage = e => {
-      const data = JSON.parse(e.data);
-      dataList.value = data.list;
-      pagination.total = data.total;
-      loading.value = false;
-    };
-  });
-
   onUnmounted(() => {
+    if (state.pageLstInterval) {
+      clearInterval(state.pageLstInterval);
+    }
     ws.close();
   });
 
