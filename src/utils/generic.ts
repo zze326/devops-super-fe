@@ -63,3 +63,31 @@ export function getCurrentHost(protocol = window.location.protocol) {
     return `${protocol}//${import.meta.env.VITE_BASE_URL}`;
   }
 }
+
+export function formatDuration(duration: number): string {
+  const seconds = Math.floor((duration / 1000) % 60);
+  const minutes = Math.floor((duration / (1000 * 60)) % 60);
+  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(duration / (1000 * 60 * 60 * 24));
+
+  let formatted = "";
+  if (days > 0) {
+    formatted += `${days}d`;
+  }
+  if (hours > 0) {
+    formatted += `${hours}h`;
+  }
+  if (minutes > 0) {
+    formatted += `${minutes}m`;
+  }
+  if (seconds > 0) {
+    formatted += `${seconds}s`;
+  }
+
+  return formatted;
+}
+
+export function calculateDuration(startTime: Date, endTime: Date): string {
+  const diff = endTime.getTime() - startTime.getTime();
+  return formatDuration(diff);
+}

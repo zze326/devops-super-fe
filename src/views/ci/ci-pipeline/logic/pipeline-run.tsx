@@ -8,7 +8,11 @@ import CheckboxCircleFill from "@iconify-icons/ri/checkbox-circle-fill";
 import CloseCircleFill from "@iconify-icons/ri/close-circle-fill";
 import BubbleLoading from "@/assets/svg/bubble-loading.svg?component";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getCurrentHost, getWsProtocol } from "@/utils/generic";
+import {
+  getCurrentHost,
+  getWsProtocol,
+  calculateDuration
+} from "@/utils/generic";
 import { getToken } from "@/utils/auth";
 import { message } from "@/utils/message";
 
@@ -49,6 +53,7 @@ export const useLogic = () => {
       prop: "podName",
       minWidth: 200
     },
+
     {
       label: "状态",
       prop: "status",
@@ -79,15 +84,28 @@ export const useLogic = () => {
       }
     },
     {
+      label: "耗时",
+      width: 120,
+      formatter: row => {
+        const startTime = new Date(row.createdAt.replace(" ", "T"));
+        const endTime = new Date(row.updatedAt.replace(" ", "T"));
+        if (row.status === 0) {
+          return calculateDuration(startTime, new Date());
+        }
+
+        return calculateDuration(startTime, endTime);
+      }
+    },
+    {
       label: "创建时间",
       prop: "createdAt",
       width: 160
     },
-    {
-      label: "更新时间",
-      prop: "updatedAt",
-      width: 160
-    },
+    // {
+    //   label: "更新时间",
+    //   prop: "updatedAt",
+    //   width: 160
+    // },
     {
       label: "操作",
       fixed: "right",
