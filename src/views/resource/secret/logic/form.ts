@@ -3,7 +3,8 @@ import type { FormRules } from "element-plus";
 import { FormDataProps } from "./types";
 import { ESecretType } from "@/api/resource/secret";
 import { testConnectApi } from "@/api/common/kubernetes";
-import { requiredRule } from "@/utils/formRules";
+import { requiredRule, urlRule } from "@/utils/formRules";
+import _ from "lodash";
 
 /** 自定义表单规则校验 */
 export const rules = reactive(<FormRules>{
@@ -11,7 +12,7 @@ export const rules = reactive(<FormRules>{
   type: [requiredRule("类型为必选项")]
 });
 
-export const kubernetesConfigRules = reactive(<FormRules>{
+export const kubernetesConfigRules = <FormRules>{
   text: [
     { required: true, message: "配置内容为必填项", trigger: "blur" },
     {
@@ -27,12 +28,19 @@ export const kubernetesConfigRules = reactive(<FormRules>{
       trigger: "blur"
     }
   ]
-});
+};
 
-export const usernamePasswordRules = reactive(<FormRules>{
+export const usernamePasswordRules = <FormRules>{
   username: [requiredRule("用户名为必填项")],
   password: [requiredRule("密码必填项")]
-});
+};
+
+export const dockerRegistryRules = _.merge(
+  <FormRules>{
+    registryUrl: [requiredRule("仓库地址为必填项"), urlRule()]
+  },
+  usernamePasswordRules
+);
 
 export const dynamicContentRules = (formData: FormDataProps) => {
   switch (formData.type) {
@@ -40,6 +48,8 @@ export const dynamicContentRules = (formData: FormDataProps) => {
       return kubernetesConfigRules;
     case ESecretType.GIT_BASIC_AUTH:
       return usernamePasswordRules;
+    case ESecretType.DOCKER_REGISTRY_AUTH:
+      return dockerRegistryRules;
   }
 };
 

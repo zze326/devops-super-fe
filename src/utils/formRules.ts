@@ -130,3 +130,12 @@ export const emailRule = (message = "邮箱格式不正确", trigger = "blur") =
     trigger
   };
 };
+
+export const urlRule = (message = "请输入合法的 URL", trigger = "blur") => {
+  return {
+    pattern:
+      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-zA-Z0-9]+([-.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,5}(:[0-9]{1,5})?(\/.*)?$/,
+    message,
+    trigger
+  };
+};

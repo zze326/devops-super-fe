@@ -8,6 +8,10 @@ export type Model = {
   content: UsernamePasswordContent | TextContent | {};
 };
 
+export type DockerRegistryAuthContent = UsernamePasswordContent & {
+  registryUrl: string;
+};
+
 export type UsernamePasswordContent = {
   username: string;
   password: string;
@@ -20,13 +24,15 @@ export type TextContent = {
 // 任务类型
 export enum ESecretType {
   GIT_BASIC_AUTH = 1,
-  KUBERNETES_CONFIG = 2
+  KUBERNETES_CONFIG = 2,
+  DOCKER_REGISTRY_AUTH = 3
 }
 
 // 任务类型枚举
 export const ESecretTypeModel = new EnumModel([
   { value: ESecretType.GIT_BASIC_AUTH, display: "Git Baisc 认证" },
-  { value: ESecretType.KUBERNETES_CONFIG, display: "Kubernetes Config" }
+  { value: ESecretType.KUBERNETES_CONFIG, display: "Kubernetes Config" },
+  { value: ESecretType.DOCKER_REGISTRY_AUTH, display: "Docker 仓库认证" }
 ]);
 
 /** 新增秘钥 */

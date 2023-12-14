@@ -162,8 +162,8 @@ defineExpose({ validateAllForms });
           </ElFormItem>
           <el-alert type="info" show-icon :closable="false">
             <p>
-              如果该环境使用的是 Kaniko
-              镜像则需启用此选项，默认使用本系统测试通过的镜像（镜像来源：gcriokaniko/executor）。
+              Kaniko
+              环境专门用来构建、推送镜像，默认使用本系统测试通过的镜像（镜像来源：gcriokaniko/executor）。
             </p>
           </el-alert>
         </el-col>

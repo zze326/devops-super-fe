@@ -7,7 +7,8 @@ import {
   ESecretTypeModel,
   ESecretType,
   TextContent,
-  UsernamePasswordContent
+  UsernamePasswordContent,
+  DockerRegistryAuthContent
 } from "@/api/resource/secret";
 
 const props = withDefaults(defineProps<FormProps>(), {
@@ -18,6 +19,15 @@ const props = withDefaults(defineProps<FormProps>(), {
 const formRef = ref();
 const contentFormRef = ref();
 const formData = ref(props.formData);
+
+const handleTypeChange = (val: ESecretType) => {
+  if (val === ESecretType.DOCKER_REGISTRY_AUTH) {
+    const dockerRegistryAuthContent = formData.value
+      .content as DockerRegistryAuthContent;
+    if (!dockerRegistryAuthContent.registryUrl)
+      dockerRegistryAuthContent.registryUrl = "https://index.docker.io/v1/";
+  }
+};
 
 const getRefs = () => [formRef.value, contentFormRef.value];
 defineExpose({ getRefs });
@@ -39,7 +49,7 @@ defineExpose({ getRefs });
       </re-col>
       <re-col :xs="24" :sm="24">
         <el-form-item label="秘钥类型" prop="type">
-          <el-radio-group v-model="formData.type">
+          <el-radio-group @change="handleTypeChange" v-model="formData.type">
             <el-radio-button
               :disabled="isEdit"
               v-for="item in ESecretTypeModel.getEnumList()"
@@ -91,6 +101,47 @@ defineExpose({ getRefs });
             type="password"
             v-model="(formData.content as UsernamePasswordContent).password"
             clearable
+            show-password
+            placeholder="请输入密码"
+          />
+        </el-form-item>
+      </re-col>
+    </el-row>
+    <el-row
+      :gutter="30"
+      v-if="formData.type === ESecretType.DOCKER_REGISTRY_AUTH"
+    >
+      <re-col :xs="24" :sm="24">
+        <el-form-item label="仓库地址" prop="registryUrl">
+          <el-input
+            show-word-limit
+            maxlength="200"
+            v-model="(formData.content as DockerRegistryAuthContent).registryUrl"
+            clearable
+            placeholder="请输入仓库地址"
+          />
+        </el-form-item>
+      </re-col>
+      <re-col :xs="24" :sm="24">
+        <el-form-item label="用户名" prop="username">
+          <el-input
+            show-word-limit
+            maxlength="30"
+            v-model="(formData.content as DockerRegistryAuthContent).username"
+            clearable
+            placeholder="请输入用户名"
+          />
+        </el-form-item>
+      </re-col>
+      <re-col :xs="24" :sm="24">
+        <el-form-item label="密码" prop="password">
+          <el-input
+            show-word-limit
+            maxlength="64"
+            type="password"
+            v-model="(formData.content as DockerRegistryAuthContent).password"
+            clearable
+            show-password
             placeholder="请输入密码"
           />
         </el-form-item>
