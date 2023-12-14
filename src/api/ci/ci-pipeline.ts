@@ -90,6 +90,7 @@ export type KanikoParam = {
   contextDir: string;
   dockerfilePath: string;
   imageDestination: string;
+  updateBaseImageCache: boolean;
 };
 
 /** 新增流水线 */

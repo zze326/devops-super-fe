@@ -58,7 +58,7 @@
               <ElForm
                 ref="formRef"
                 :model="envTab.kanikoParam"
-                label-width="130px"
+                label-width="150px"
                 :rules="kanikoFormRules"
               >
                 <ElFormItem label="上下文目录" prop="contextDir">
@@ -88,6 +88,25 @@
                     placeholder="镜像推送地址，例：registry.zze.xyz/online/devops-super:tmp"
                   />
                 </ElFormItem>
+                <el-space fill>
+                  <el-alert type="info" show-icon :closable="false">
+                    <p>
+                      基础镜像指的是 Dockerfile 中 FROM
+                      使用的镜像，如果启用，该流水线每次运行时都会重新拉取基础镜像，建议启用后运行一次流水线预热镜像后立即关闭，以提高构建镜像的速度。
+                    </p>
+                  </el-alert>
+                  <ElFormItem
+                    label="更新基础镜像缓存"
+                    prop="updateBaseImageCache"
+                  >
+                    <el-switch
+                      inline-prompt
+                      active-text="启用"
+                      inactive-text="禁用"
+                      v-model="envTab.kanikoParam.updateBaseImageCache"
+                    />
+                  </ElFormItem>
+                </el-space>
               </ElForm>
             </div>
             <el-tabs
@@ -284,7 +303,8 @@ const kanikoFormRules = {
     requiredRule("Dockerfile 路径为必填项"),
     relativePathFileRule("Dockerfile 路径必须是相对路径")
   ],
-  imageDestination: [requiredRule("镜像推送地址为必填项"), imageUrlRule()]
+  imageDestination: [requiredRule("镜像推送地址为必填项"), imageUrlRule()],
+  updateBaseImageCache: [requiredRule("是否更新缓存为必填项")]
 };
 
 // 添加环境 - 打开环境选择框
@@ -611,7 +631,8 @@ async function init() {
         envItem.kanikoParam = {
           contextDir: "",
           dockerfilePath: "",
-          imageDestination: ""
+          imageDestination: "",
+          updateBaseImageCache: false
         };
       }
     });
