@@ -88,6 +88,20 @@
                     placeholder="镜像推送地址，例：registry.zze.xyz/online/devops-super:tmp"
                   />
                 </ElFormItem>
+                <ElFormItem label="镜像仓库认证秘钥" prop="secretId">
+                  <el-select
+                    v-model="envTab.kanikoParam.secretId"
+                    clearable
+                    placeholder="请选择镜像仓库认证秘钥"
+                  >
+                    <el-option
+                      v-for="item in state.dockerRegistrySecretList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </ElFormItem>
                 <el-space fill>
                   <el-alert type="info" show-icon :closable="false">
                     <p>
@@ -284,12 +298,14 @@ const state = reactive<{
   changePoint: string;
   params: Param[];
   gitBasicSecertList: Partial<SecretModel>[];
+  dockerRegistrySecretList: Partial<SecretModel>[];
 }>({
   envTabs: [],
   currentEnvSort: 0,
   changePoint: "",
   params: cloneDeep(store.arrangeCurrent.params) || [],
-  gitBasicSecertList: []
+  gitBasicSecertList: [],
+  dockerRegistrySecretList: []
 });
 
 const appInstance = getCurrentInstance();
@@ -304,7 +320,8 @@ const kanikoFormRules = {
     relativePathFileRule("Dockerfile 路径必须是相对路径")
   ],
   imageDestination: [requiredRule("镜像推送地址为必填项"), imageUrlRule()],
-  updateBaseImageCache: [requiredRule("是否更新缓存为必填项")]
+  updateBaseImageCache: [requiredRule("是否更新缓存为必填项")],
+  secretId: [requiredRule("镜像仓库认证秘钥为必填项")]
 };
 
 // 添加环境 - 打开环境选择框
@@ -611,15 +628,17 @@ const handleParamRemove = (idx: number) => {
 
 // 初始化页面数据
 async function init() {
-  const [res1, res2] = await Promise.all([
+  const [res1, res2, res3] = await Promise.all([
     getSecretLstApi({ type: ESecretType.GIT_BASIC_AUTH }),
+    getSecretLstApi({ type: ESecretType.DOCKER_REGISTRY_AUTH }),
     getConfigApi(store.id)
   ]);
 
   state.gitBasicSecertList = res1.data.list;
-  if (res2.data.config && res2.data.config.length > 0) {
-    res2.data.config.forEach(envItem => {
-      const envInfo = res2.data.envMap[envItem.id];
+  state.dockerRegistrySecretList = res2.data.list;
+  if (res3.data.config && res3.data.config.length > 0) {
+    res3.data.config.forEach(envItem => {
+      const envInfo = res3.data.envMap[envItem.id];
       envItem.name = envInfo.name;
       envItem.isKaniko = envInfo.isKaniko;
       envItem.stages?.forEach(stageItem => {
@@ -632,11 +651,12 @@ async function init() {
           contextDir: "",
           dockerfilePath: "",
           imageDestination: "",
-          updateBaseImageCache: false
+          updateBaseImageCache: false,
+          secretId: null
         };
       }
     });
-    state.envTabs = res2.data.config as EnvTab[];
+    state.envTabs = res3.data.config as EnvTab[];
     state.currentEnvSort = state.envTabs.length;
     currentEnvTab.value.currentStageSort = currentEnvTab.value.stages.length;
   }

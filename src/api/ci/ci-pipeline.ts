@@ -91,6 +91,7 @@ export type KanikoParam = {
   dockerfilePath: string;
   imageDestination: string;
   updateBaseImageCache: boolean;
+  secretId: number;
 };
 
 /** 新增流水线 */
