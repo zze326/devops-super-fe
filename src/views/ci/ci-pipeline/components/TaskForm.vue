@@ -84,14 +84,13 @@
       </el-col>
       <el-col :span="20" :xs="20" :sm="20">
         <el-form-item label="内容" prop="content">
-          <el-input
-            show-word-limit
-            maxlength="3000"
-            :autosize="{ minRows: 4, maxRows: 8 }"
-            type="textarea"
+          <el-input type="hidden" />
+          <MonacoEditor
+            height="200px"
+            :show-minimap="false"
+            :show-line-numbers="false"
             v-model="(data.shellExecData as ShellExecData).content"
-            clearable
-            placeholder="请输入 Shell 脚本内容"
+            language="shell"
           />
         </el-form-item>
       </el-col> </el-row
@@ -108,6 +107,7 @@ import {
 } from "@/api/ci/ci-pipeline";
 import { Model as SecretModel } from "@/api/resource/secret";
 import { computed, ref } from "vue";
+import MonacoEditor from "@/components/MonacoEditor/index.vue";
 
 import _ from "lodash";
 import { FormInstance } from "element-plus";

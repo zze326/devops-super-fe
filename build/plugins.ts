@@ -10,6 +10,7 @@ import { visualizer } from "rollup-plugin-visualizer";
 import removeConsole from "vite-plugin-remove-console";
 import themePreprocessorPlugin from "@pureadmin/theme";
 import { genScssMultipleScopeVars } from "../src/layout/theme";
+import monacoEditorPlugin from "vite-plugin-monaco-editor";
 
 export function getPluginsList(
   command: string,
@@ -51,6 +52,15 @@ export function getPluginsList(
     // 打包分析
     lifecycle === "report"
       ? visualizer({ open: true, brotliSize: true, filename: "report.html" })
-      : null
+      : null,
+    monacoEditorPlugin({
+      languageWorkers: [
+        "typescript",
+        "html",
+        "css",
+        "json",
+        "editorWorkerService"
+      ]
+    })
   ];
 }
