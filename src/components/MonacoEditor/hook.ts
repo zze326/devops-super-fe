@@ -1,5 +1,4 @@
 import * as monaco from "monaco-editor";
-// import useCommonStore from '@/store/common'
 import { ref, nextTick, onBeforeUnmount } from "vue";
 
 export function useMonacoEditor({
@@ -59,9 +58,9 @@ export function useMonacoEditor({
   // 数据更新
   function updateVal(val: string) {
     nextTick(() => {
-      if (getOption(monaco.editor.EditorOption.readOnly)) {
-        updateOptions({ readOnly: false });
-      }
+      // if (getOption(monaco.editor.EditorOption.readOnly)) {
+      //   updateOptions({ readOnly: false });
+      // }
       monacoEditor?.setValue(val);
       setTimeout(async () => {
         await formatDoc();
