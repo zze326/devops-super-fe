@@ -106,7 +106,7 @@ const {
         }"
       >
         <template #operation="{ row }">
-          <div class="flex flex-wrap items-center">
+          <div class="flex flex-wrap items-center justify-center">
             <el-button
               v-auth="Permiss.RUN"
               class="reset-margin"
@@ -129,7 +129,10 @@ const {
             >
               编排
             </el-button>
-            <el-dropdown @command="handleMoreCommand($event, row)">
+            <el-dropdown
+              v-if="hasAuth([Permiss.UPT, Permiss.CLONE, Permiss.DEL], true)"
+              @command="handleMoreCommand($event, row)"
+            >
               <span>
                 <component :is="useRenderIcon(More)" />
                 <el-text>更多</el-text>
@@ -137,9 +140,15 @@ const {
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="edit">编辑</el-dropdown-item>
-                  <el-dropdown-item command="clone">克隆</el-dropdown-item>
-                  <el-dropdown-item command="delete">删除</el-dropdown-item>
+                  <el-dropdown-item v-auth="Permiss.UPT" command="edit"
+                    >编辑</el-dropdown-item
+                  >
+                  <el-dropdown-item v-auth="Permiss.CLONE" command="clone"
+                    >克隆</el-dropdown-item
+                  >
+                  <el-dropdown-item v-auth="Permiss.DEL" command="delete"
+                    >删除</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>

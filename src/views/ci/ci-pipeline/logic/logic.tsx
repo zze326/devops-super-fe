@@ -61,11 +61,16 @@ export const useLogic = tableRef => {
     },
     {
       label: "操作",
-      fixed: "right",
-      width: 210,
+      align: "center",
+      width: hasAuth(
+        [Permiss.UPT, Permiss.CLONE, Permiss.DEL, Permiss.UPT],
+        true
+      )
+        ? 210
+        : 100,
       slot: "operation",
       hide: !hasAuth(
-        [Permiss.UPT, Permiss.DEL, Permiss.ARRANGE, Permiss.RUN],
+        [Permiss.UPT, Permiss.DEL, Permiss.ARRANGE, Permiss.RUN, Permiss.CLONE],
         true
       )
     }
