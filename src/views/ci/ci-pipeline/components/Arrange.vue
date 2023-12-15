@@ -56,7 +56,7 @@
           >
             <div v-if="envTab.isKaniko">
               <ElForm
-                ref="formRef"
+                ref="kanikoFormRef"
                 :model="envTab.kanikoParam"
                 label-width="150px"
                 :rules="kanikoFormRules"
@@ -540,6 +540,14 @@ const validateAllForms = async () => {
   if (appInstance?.refs["paramFormRef"]) {
     for (const formRef of appInstance?.refs[
       "paramFormRef"
+    ] as Array<FormInstance>) {
+      validatePromiseArr.push(formRef.validate().catch(_ => false));
+    }
+  }
+
+  if (appInstance?.refs["kanikoFormRef"]) {
+    for (const formRef of appInstance?.refs[
+      "kanikoFormRef"
     ] as Array<FormInstance>) {
       validatePromiseArr.push(formRef.validate().catch(_ => false));
     }
