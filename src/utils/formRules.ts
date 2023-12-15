@@ -23,7 +23,7 @@ export const relativePathFileRule = (
   trigger = "blur"
 ) => {
   return {
-    pattern: /^(?!\/)(?:[^/]+\/)*[^/]+$/,
+    pattern: /^(?!\/|\\)(?!.+[/\\]$).*$/,
     message,
     trigger
   };
@@ -34,7 +34,7 @@ export const relativePathRule = (
   trigger = "blur"
 ) => {
   return {
-    pattern: /^[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
+    pattern: /^(?!\/|\\)/,
     message,
     trigger
   };

@@ -80,7 +80,7 @@ const {
     v-if="state.logDrawerVisible"
     destroy-on-close
     v-model="state.logDrawerVisible"
-    title="日志"
+    title="构建日志"
     size="35%"
   >
     <Log :padding-bottom="120" :ws-url="state.logWsUrl" />

@@ -148,6 +148,10 @@ defineExpose({ validateAllForms });
               开启持久化则表示要挂载 PVC
               到指定目录以保存构建环境运行期间产生的数据。
             </p>
+            <p v-if="formData.isKaniko">
+              Kaniko 环境的镜像缓存目录为
+              /cache，建议将持久化卷挂载到该目录使用缓存以提高构建速度。
+            </p>
           </el-alert>
         </el-col>
         <el-col :span="12">

@@ -256,7 +256,6 @@ import {
   Model as SecretModel
 } from "@/api/resource/secret";
 import {
-  imageUrlRule,
   relativePathFileRule,
   relativePathRule,
   requiredRule
@@ -319,7 +318,7 @@ const kanikoFormRules = {
     requiredRule("Dockerfile 路径为必填项"),
     relativePathFileRule("Dockerfile 路径必须是相对路径")
   ],
-  imageDestination: [requiredRule("镜像推送地址为必填项"), imageUrlRule()],
+  imageDestination: [requiredRule("镜像推送地址为必填项")],
   updateBaseImageCache: [requiredRule("是否更新缓存为必填项")],
   secretId: [requiredRule("镜像仓库认证秘钥为必填项")]
 };
@@ -363,7 +362,12 @@ function newEmptyTask() {
 function handleEnvSelectConfirm(envData: EnvModel) {
   const newEnvTab = cloneDeep(envData) as EnvTab;
   newEnvTab.sort = state.envTabs.length + 1;
-  newEnvTab.stages = [{ name: "未命名", sort: 1, tasks: [newEmptyTask()] }];
+  if (envData.isKaniko) {
+    newEnvTab.kanikoParam = newEmptyKanikoParam();
+    newEnvTab.stages = [];
+  } else {
+    newEnvTab.stages = [{ name: "未命名", sort: 1, tasks: [newEmptyTask()] }];
+  }
   newEnvTab.currentStageSort = 1;
   state.envTabs.push(newEnvTab);
   state.currentEnvSort = newEnvTab.sort;
@@ -612,6 +616,17 @@ function newEmptyParam(): Param {
   };
 }
 
+// 创建空的 kaniko 参数
+function newEmptyKanikoParam(): KanikoParam {
+  return {
+    contextDir: "",
+    dockerfilePath: "",
+    imageDestination: "",
+    updateBaseImageCache: false,
+    secretId: null
+  };
+}
+
 // 新增参数
 const handleParamAdd = (idx: number) => {
   state.params.splice(idx + 1, 0, newEmptyParam());
@@ -647,13 +662,7 @@ async function init() {
         }
       });
       if (envItem.isKaniko && !envItem.kanikoParam) {
-        envItem.kanikoParam = {
-          contextDir: "",
-          dockerfilePath: "",
-          imageDestination: "",
-          updateBaseImageCache: false,
-          secretId: null
-        };
+        envItem.kanikoParam = newEmptyKanikoParam();
       }
     });
     state.envTabs = res3.data.config as EnvTab[];
